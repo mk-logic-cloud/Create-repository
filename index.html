@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HandwerkOS — Auftragszentrum</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans',sans-serif;font-size:14px;line-height:1.6;background:#F0F2F5;color:#0F172A;min-height:100vh;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.font-display{font-family:'Syne',sans-serif}
+
+/* ── Design Tokens ──────────────────────────────────────── */
+:root{
+  --navy:#0F172A;--navy-2:#1E293B;--navy-3:#334155;
+  --amber:#F59E0B;--amber-dim:#FDE68A;--amber-bg:#FFFBEB;
+  --surface:#F0F2F5;--card:#FFFFFF;
+  --border:#E2E8F0;--border-2:#CBD5E1;
+  --text:#0F172A;--muted:#64748B;--faint:#94A3B8;
+  --green:#10B981;--green-bg:#ECFDF5;
+  --blue:#3B82F6;--blue-bg:#EFF6FF;
+  --red:#EF4444;--red-bg:#FEF2F2;
+  --orange:#F97316;--orange-bg:#FFF7ED;
+  --purple:#8B5CF6;--purple-bg:#F5F3FF;
+  --r:12px;--r-sm:8px;--r-btn:7px;
+  --shadow:0 1px 3px rgba(15,23,42,.06),0 4px 12px rgba(15,23,42,.04);
+  --shadow-md:0 4px 16px rgba(15,23,42,.1);
+  --shadow-lg:0 12px 40px rgba(15,23,42,.14);
+  --tr:0.17s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── Layout ─────────────────────────────────────────────── */
+#app{display:flex;min-height:100vh}
+#sidebar{width:240px;background:var(--navy);flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+#content{flex:1;min-width:0;padding:2rem}
+
+/* ── Sidebar ────────────────────────────────────────────── */
+.s-logo{padding:1.4rem 1.25rem 1rem;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px}
+.s-logo-mark{width:30px;height:30px;background:var(--amber);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.s-logo-text{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:#fff;letter-spacing:-.01em}
+.s-logo-sub{font-size:.65rem;color:rgba(255,255,255,.35);font-family:'IBM Plex Mono',monospace;letter-spacing:.05em}
+.s-section{padding:.6rem 1.25rem .2rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-top:.75rem}
+.s-nav{padding:.3rem 0;flex:1}
+.s-link{display:flex;align-items:center;gap:10px;padding:.6rem 1.25rem;color:rgba(255,255,255,.55);font-size:.84rem;font-weight:400;text-decoration:none;border-left:2.5px solid transparent;transition:all var(--tr);cursor:pointer;user-select:none}
+.s-link:hover{color:rgba(255,255,255,.9);background:rgba(255,255,255,.05)}
+.s-link.active{color:#fff;background:rgba(245,158,11,.1);border-left-color:var(--amber);font-weight:500}
+.s-link svg{flex-shrink:0;opacity:.7}
+.s-link.active svg{opacity:1}
+.s-footer{padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,.07);font-size:.7rem;color:rgba(255,255,255,.2);line-height:1.6}
+.demo-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(245,158,11,.15);color:var(--amber);font-size:.65rem;font-weight:600;letter-spacing:.06em;padding:2px 7px;border-radius:20px;border:1px solid rgba(245,158,11,.25);margin-left:auto}
+
+/* ── Page ───────────────────────────────────────────────── */
+.page-head{margin-bottom:1.75rem}
+.page-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;color:var(--text)}
+.page-sub{font-size:.84rem;color:var(--muted);margin-top:3px}
+.breadcrumb{display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--muted);margin-bottom:.6rem}
+.breadcrumb a{color:var(--muted);text-decoration:none;transition:color var(--tr)}
+.breadcrumb a:hover{color:var(--text)}
+.breadcrumb span{color:var(--faint)}
+
+/* ── Cards ──────────────────────────────────────────────── */
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border)}
+.card-head{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.card-head h2{font-size:.9rem;font-weight:600;font-family:'Syne',sans-serif}
+.card-body{padding:1.25rem}
+
+/* ── KPI Grid ───────────────────────────────────────────── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+.kpi{background:var(--card);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow);padding:1.1rem 1.25rem;position:relative;overflow:hidden;transition:box-shadow var(--tr),transform var(--tr);cursor:default}
+.kpi:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.kpi-accent{position:absolute;top:0;left:0;right:0;height:2.5px;border-radius:12px 12px 0 0}
+.kpi-label{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:6px}
+.kpi-value{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:700;letter-spacing:-.04em;line-height:1;color:var(--text)}
+.kpi-foot{font-size:.75rem;color:var(--faint);margin-top:5px}
+.kpi-icon{position:absolute;bottom:10px;right:12px;font-size:1.6rem;opacity:.12}
+
+/* ── Badges ─────────────────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;font-size:.72rem;font-weight:600;letter-spacing:.02em;white-space:nowrap;font-family:'IBM Plex Mono',monospace}
+.b-anfrage{background:#EFF6FF;color:#1D4ED8}
+.b-angebot{background:#FFFBEB;color:#92400E}
+.b-angenommen{background:#ECFDF5;color:#065F46}
+.b-bearbeitung{background:#F5F3FF;color:#5B21B6}
+.b-abgeschlossen{background:#F0FDF4;color:#14532D}
+.b-rechnung{background:#FFF7ED;color:#9A3412}
+.b-bezahlt{background:#ECFDF5;color:#065F46;border:1px solid #A7F3D0}
+.b-storniert{background:#FEF2F2;color:#991B1B}
+
+/* ── Table ──────────────────────────────────────────────── */
+.tbl{width:100%;border-collapse:collapse;font-size:.84rem}
+.tbl thead th{padding:.6rem 1rem;text-align:left;font-size:.68rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:#F8FAFC;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;white-space:nowrap;transition:color var(--tr)}
+.tbl thead th:hover{color:var(--text)}
+.tbl thead th.s-col{color:var(--text)}
+.tbl tbody tr{border-bottom:1px solid var(--border);transition:background var(--tr);cursor:pointer}
+.tbl tbody tr:last-child{border-bottom:none}
+.tbl tbody tr:hover{background:#F8FAFC}
+.tbl tbody td{padding:.85rem 1rem;vertical-align:middle}
+.tbl tbody td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl tbody td.muted{color:var(--muted)}
+
+/* ── Filter Chips ───────────────────────────────────────── */
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;padding:1rem 1.25rem .25rem}
+.chip{padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--muted);transition:all var(--tr);font-family:'IBM Plex Mono',monospace}
+.chip:hover{border-color:var(--navy);color:var(--text)}
+.chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+
+/* ── Buttons ────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:.48rem 1rem;border-radius:var(--r-btn);font-family:'IBM Plex Sans',sans-serif;font-size:.84rem;font-weight:500;cursor:pointer;border:1.5px solid transparent;transition:all var(--tr);text-decoration:none;white-space:nowrap;line-height:1.4}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn-primary:hover:not(:disabled){background:var(--navy-2)}
+.btn-amber{background:var(--amber);color:var(--navy);border-color:var(--amber);font-weight:600}
+.btn-amber:hover:not(:disabled){background:#D97706;border-color:#D97706}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--border)}
+.btn-ghost:hover:not(:disabled){background:#F8FAFC;border-color:var(--border-2)}
+.btn-danger{background:var(--red-bg);color:var(--red);border-color:#FECACA}
+.btn-danger:hover:not(:disabled){background:#FEE2E2}
+.btn-success{background:var(--green-bg);color:var(--green);border-color:#A7F3D0}
+.btn-sm{padding:.3rem .7rem;font-size:.78rem}
+.btn-lg{padding:.7rem 1.4rem;font-size:.9rem}
+
+/* ── Forms ──────────────────────────────────────────────── */
+.fg{margin-bottom:1rem}
+.fl{display:block;font-size:.78rem;font-weight:500;color:var(--text);margin-bottom:5px}
+.fl .req{color:var(--red);margin-left:2px}
+.fi,.fs,.ft{width:100%;padding:.5rem .8rem;border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:'IBM Plex Sans',sans-serif;font-size:.84rem;color:var(--text);background:#fff;outline:none;transition:border-color var(--tr),box-shadow var(--tr)}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(15,23,42,.08)}
+.ft{resize:vertical;min-height:90px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+/* ── Timeline ───────────────────────────────────────────── */
+.tl{display:flex;align-items:flex-start;padding:1rem 0;overflow-x:auto;gap:0}
+.tl-step{flex:1;min-width:80px;display:flex;flex-direction:column;align-items:center;position:relative}
+.tl-step::before{content:'';position:absolute;top:12px;left:calc(50% + 12px);right:calc(-50% + 12px);height:2px;background:var(--border);z-index:0}
+.tl-step:last-child::before{display:none}
+.tl-step.done::before{background:var(--green)}
+.tl-dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;z-index:1;position:relative;font-size:11px;transition:all var(--tr)}
+.tl-step.done .tl-dot{background:var(--green);border-color:var(--green);color:#fff}
+.tl-step.active .tl-dot{background:var(--navy);border-color:var(--navy);color:#fff;box-shadow:0 0 0 4px rgba(15,23,42,.1)}
+.tl-lbl{font-size:.64rem;font-weight:500;color:var(--muted);margin-top:6px;text-align:center;line-height:1.3;padding:0 4px}
+.tl-step.active .tl-lbl{color:var(--navy);font-weight:700}
+.tl-step.done .tl-lbl{color:var(--green)}
+
+/* ── Positions Table ────────────────────────────────────── */
+.ptbl{width:100%;border-collapse:collapse;font-size:.84rem}
+.ptbl th{padding:.55rem .75rem;text-align:left;font-size:.67rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border)}
+.ptbl td{padding:.65rem .75rem;border-bottom:1px solid var(--border);vertical-align:middle}
+.ptbl tbody tr:last-child td{border-bottom:none}
+.ptbl tfoot td{padding:.7rem .75rem;font-weight:600;border-top:2px solid var(--border)}
+.edit-inp{padding:3px 7px;border:1.5px solid transparent;border-radius:5px;font-family:'IBM Plex Sans',sans-serif;font-size:.84rem;background:transparent;color:var(--text);transition:all var(--tr);width:100%}
+.edit-inp:hover{border-color:var(--border)}
+.edit-inp:focus{border-color:var(--navy);background:#fff;outline:none;box-shadow:0 0 0 2px rgba(15,23,42,.07)}
+.edit-sel{padding:3px 7px;border:1.5px solid var(--border);border-radius:5px;font-family:'IBM Plex Sans',sans-serif;font-size:.84rem;background:#fff;color:var(--text);transition:all var(--tr)}
+.edit-sel:focus{border-color:var(--navy);outline:none}
+.ptbl .add-row td{color:var(--green);font-size:.78rem;font-weight:500;cursor:pointer;padding:.55rem .75rem;border-top:1px dashed #D1FAE5;transition:background var(--tr)}
+.ptbl .add-row:hover td{background:#F0FDF4}
+.ptbl .del-btn{background:transparent;border:none;color:var(--faint);cursor:pointer;font-size:15px;padding:2px 4px;border-radius:4px;transition:all var(--tr);line-height:1}
+.ptbl .del-btn:hover{background:var(--red-bg);color:var(--red)}
+
+/* ── Toast ──────────────────────────────────────────────── */
+#toasts{position:fixed;bottom:1.25rem;right:1.25rem;z-index:9000;display:flex;flex-direction:column;gap:.4rem;pointer-events:none}
+.toast{background:var(--navy);color:#fff;padding:.7rem 1rem;border-radius:9px;font-size:.82rem;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow-lg);pointer-events:auto;opacity:0;transform:translateX(12px);animation:tIn .28s ease forwards,tOut .28s ease 3.2s forwards;max-width:300px;border-left:3px solid var(--amber)}
+.toast.ok{border-left-color:var(--green)}
+.toast.err{border-left-color:var(--red)}
+.toast.info{border-left-color:var(--blue)}
+@keyframes tIn{to{opacity:1;transform:translateX(0)}}
+@keyframes tOut{to{opacity:0;transform:translateX(12px)}}
+
+/* ── Modal ──────────────────────────────────────────────── */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(2px);z-index:800;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;animation:fIn .2s ease forwards}
+.modal{background:#fff;border-radius:14px;box-shadow:var(--shadow-lg);width:100%;max-width:460px;overflow:hidden;transform:scale(.96) translateY(8px);animation:mIn .22s ease forwards}
+@keyframes fIn{to{opacity:1}}
+@keyframes mIn{to{transform:scale(1) translateY(0)}}
+.m-head{padding:1.1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.m-head h3{font-size:.95rem;font-weight:600;font-family:'Syne',sans-serif}
+.m-body{padding:1.25rem}
+.m-foot{padding:.9rem 1.25rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:.6rem}
+
+/* ── Skeleton ───────────────────────────────────────────── */
+@keyframes shimmer{from{background-position:-600px 0}to{background-position:600px 0}}
+.sk{background:linear-gradient(90deg,#F1F5F9 25%,#E2E8F0 50%,#F1F5F9 75%);background-size:1200px 100%;animation:shimmer 1.4s infinite;border-radius:6px}
+.sk-h{height:14px;margin-bottom:8px}
+.sk-H{height:22px;margin-bottom:10px;width:50%}
+.sk-card{height:110px;border-radius:var(--r);margin-bottom:1rem}
+
+/* ── Portal ─────────────────────────────────────────────── */
+.portal-wrap{max-width:640px;margin:0 auto;padding:2rem 1rem}
+.portal-hd{background:var(--navy);padding:1.75rem 2rem 1.5rem;border-radius:var(--r) var(--r) 0 0;border-bottom:3px solid var(--amber)}
+.portal-logo{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:7px;margin-bottom:1.25rem}
+.portal-logo .mark{width:24px;height:24px;background:var(--amber);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.portal-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;line-height:1.3}
+.portal-sub{font-size:.84rem;color:rgba(255,255,255,.5);margin-top:4px}
+.portal-body{background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);padding:1.75rem}
+.portal-accept{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1.5px solid #BBF7D0;border-radius:10px;padding:1.5rem;margin-top:1.5rem;text-align:center}
+
+/* ── Detail 2-col ───────────────────────────────────────── */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.meta-row{display:flex;padding:5px 0;font-size:.84rem;gap:8px}
+.meta-row .ml{color:var(--muted);width:110px;flex-shrink:0}
+.meta-row .mv{font-weight:500;word-break:break-word}
+
+/* ── Copy badge ─────────────────────────────────────────── */
+.copy-link{font-family:'IBM Plex Mono',monospace;font-size:.7rem;background:#F1F5F9;padding:3px 8px;border-radius:5px;color:var(--blue);cursor:pointer;transition:background var(--tr);display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:none}
+.copy-link:hover{background:#E2E8F0}
+
+/* ── Success Screen ─────────────────────────────────────── */
+.success-wrap{text-align:center;padding:3rem 1.5rem}
+.success-icon{width:68px;height:68px;background:var(--green-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:1.8rem;border:2px solid #A7F3D0}
+
+/* ── Divider ────────────────────────────────────────────── */
+.div{height:1px;background:var(--border);margin:.9rem 0}
+
+/* ── Fade-in ────────────────────────────────────────────── */
+.fade{animation:fIn .25s ease}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .detail-grid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  #sidebar{width:100%;height:auto;position:relative;flex-direction:row;flex-wrap:wrap;overflow:visible}
+  #app{flex-direction:column}
+  .s-logo{padding:.9rem 1rem}
+  .s-nav{display:flex;flex-wrap:wrap;padding:.25rem .5rem}
+  .s-section{display:none}
+  .s-link{padding:.4rem .7rem;border-left:none;border-bottom:2.5px solid transparent;font-size:.78rem}
+  .s-link.active{border-bottom-color:var(--amber);border-left:none;background:rgba(245,158,11,.08)}
+  .s-footer{display:none}
+  #content{padding:1rem}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:.75rem}
+  .tbl thead th:nth-child(n+4),.tbl tbody td:nth-child(n+4){display:none}
+  .form-row{grid-template-columns:1fr}
+  .portal-hd{padding:1.25rem}
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- ── Sidebar ─────────────────────────────────────────── -->
+  <aside id="sidebar">
+    <div class="s-logo">
+      <div class="s-logo-mark">⚡</div>
+      <div>
+        <div class="s-logo-text">HandwerkOS</div>
+        <div class="s-logo-sub">AUFTRAGSZENTRUM</div>
+      </div>
+    </div>
+    <nav class="s-nav" id="nav">
+      <div class="s-section">Navigation</div>
+      <a class="s-link" data-route="dashboard">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a class="s-link" data-route="neuer-auftrag">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Neue Anfrage
+      </a>
+      <div class="s-section" style="margin-top:1rem">Demo</div>
+      <a class="s-link" data-route="portal/tok_demo_1abc">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Kundenportal
+        <span class="demo-badge">DEMO</span>
+      </a>
+    </nav>
+    <div class="s-footer">HandwerkOS v1.0<br>Base44 · Make.com · Vercel</div>
+  </aside>
+
+  <!-- ── Main ───────────────────────────────────────────── -->
+  <main id="content">
+    <div id="page" class="fade"></div>
+  </main>
+</div>
+
+<!-- Toasts -->
+<div id="toasts"></div>
+
+<script>
+// ============================================================
+//  CONFIG — Alle Platzhalter hier ersetzen
+// ============================================================
+const CFG = {
+  BASE44_API_URL:         'BASE44_API_URL_PLACEHOLDER',
+  BASE44_API_KEY:         'BASE44_API_KEY_PLACEHOLDER',
+  WEBHOOK_NEUE_ANFRAGE:   'WEBHOOK_NEUE_ANFRAGE_PLACEHOLDER',
+  WEBHOOK_ANGEBOT_SENDEN: 'WEBHOOK_ANGEBOT_SENDEN_PLACEHOLDER',
+  WEBHOOK_FREIGABE:       'WEBHOOK_FREIGABE_PLACEHOLDER',
+  WEBHOOK_STATUS_UPDATE:  'WEBHOOK_STATUS_UPDATE_PLACEHOLDER',
+};
+
+// ============================================================
+//  DEMO DATA — Wird aktiv solange BASE44_API_URL Placeholder
+// ============================================================
+const DEMO = [
+  {id:'1',titel:'Elektroinstallation Neubau',beschreibung:'Vollständige Elektroinstallation inkl. Sicherungskasten, Außenbeleuchtung und Kabelverlegung im Neubau.',status:'Angebot versendet',netto:4200,brutto:4998,mwst:19,angebotsdatum:'2026-05-28',wunschtermin:'2026-06-15',ausfuehrung:null,token:'tok_demo_1abc',erinnerung:false,
+    kunde:{name:'Thomas Müller',firma:'Bauherr Müller GmbH',email:'t.mueller@example.com',tel:'0151 23456789'},
+    pos:[{id:'p1',bez:'Unterverteilung 3-phasig',menge:1,einheit:'Stk',ep:850},{id:'p2',bez:'Kabelverlegung NYM-J',menge:120,einheit:'m',ep:8.5},{id:'p3',bez:'Steckdosen & Schalter',menge:28,einheit:'Stk',ep:45},{id:'p4',bez:'Inbetriebnahme',menge:4,einheit:'Std',ep:85}]},
+  {id:'2',titel:'Badezimmer Renovierung',beschreibung:'Fliesenlegen Boden & Wand, Wannentausch gegen bodengleiche Dusche, Sanitärinstallation komplett.',status:'In Bearbeitung',netto:7800,brutto:9282,mwst:19,angebotsdatum:'2026-05-10',wunschtermin:'2026-05-20',ausfuehrung:'2026-05-22',token:'tok_demo_2def',erinnerung:true,
+    kunde:{name:'Sandra Hoffmann',firma:'Privat',email:'s.hoffmann@example.com',tel:'0171 98765432'},
+    pos:[{id:'p5',bez:'Fliesenarbeiten Boden+Wand',menge:12,einheit:'m²',ep:120},{id:'p6',bez:'Duschkabine inkl. Einbau',menge:1,einheit:'Psch',ep:1800},{id:'p7',bez:'Sanitärinstallation',menge:6,einheit:'Std',ep:90}]},
+  {id:'3',titel:'Heizungsanlage Wartung',beschreibung:'Jährliche Wartung der Gasheizung, Filterwechsel, Dichtigkeitsprüfung, Protokoll.',status:'Bezahlt',netto:320,brutto:380.80,mwst:19,angebotsdatum:'2026-05-01',wunschtermin:'2026-05-05',ausfuehrung:'2026-05-06',token:'tok_demo_3ghi',erinnerung:false,
+    kunde:{name:'Klaus Kern',firma:'Immobilienverwaltung Kern',email:'k.kern@example.com',tel:'0162 11223344'},
+    pos:[{id:'p8',bez:'Wartung Gasheizung',menge:1,einheit:'Psch',ep:220},{id:'p9',bez:'Filterset 2er Pack',menge:2,einheit:'Stk',ep:50}]},
+  {id:'4',titel:'Dachrinnenreinigung',beschreibung:'Reinigung aller Dachrinnen, Austausch defekter Haken, Dichtheitsprüfung.',status:'Anfrage',netto:0,brutto:0,mwst:19,angebotsdatum:null,wunschtermin:'2026-06-10',ausfuehrung:null,token:'tok_demo_4jkl',erinnerung:false,
+    kunde:{name:'Monika Bauer',firma:'Privat',email:'m.bauer@example.com',tel:'0176 55667788'},
+    pos:[]},
+  {id:'5',titel:'Malerarbeiten Bürofläche',beschreibung:'Streichen von 200m² Bürofläche inkl. Grundierung, Schutzfolie und 2-facher Deckfarbe.',status:'Rechnung versendet',netto:2600,brutto:3094,mwst:19,angebotsdatum:'2026-04-20',wunschtermin:'2026-05-01',ausfuehrung:'2026-05-03',token:'tok_demo_5mno',erinnerung:true,
+    kunde:{name:'Andrea Ziegler',firma:'Büropark Westend GmbH',email:'a.ziegler@example.com',tel:'0170 33445566'},
+    pos:[{id:'p10',bez:'Wandfarbe 10L',menge:8,einheit:'Stk',ep:45},{id:'p11',bez:'Malerarbeiten inkl. Grundierung',menge:200,einheit:'m²',ep:10},{id:'p12',bez:'Schutzfolie & Material',menge:1,einheit:'Psch',ep:240}]},
+];
+
+const STATUS_ORDER = ['Anfrage','Angebot versendet','Angebot angenommen','In Bearbeitung','Abgeschlossen','Rechnung versendet','Bezahlt'];
+const STATUS_CLASS = {
+  'Anfrage':'b-anfrage','Angebot versendet':'b-angebot','Angebot angenommen':'b-angenommen',
+  'In Bearbeitung':'b-bearbeitung','Abgeschlossen':'b-abgeschlossen',
+  'Rechnung versendet':'b-rechnung','Bezahlt':'b-bezahlt','Storniert':'b-storniert'
+};
+const STATUS_DOT = {'Anfrage':'📥','Angebot versendet':'📤','Angebot angenommen':'✅','In Bearbeitung':'🔧','Abgeschlossen':'✔️','Rechnung versendet':'🧾','Bezahlt':'💶','Storniert':'🚫'};
+
+// ============================================================
+//  APP STATE
+// ============================================================
+const S = {
+  auftraege: [],
+  sort: {col:'wunschtermin', dir:'desc'},
+  filter: 'alle',
+  pos: {},   // editing positions keyed by auftrag id
+};
+
+// ============================================================
+//  API / DATA LAYER
+// ============================================================
+const isDemo = () => CFG.BASE44_API_URL.includes('PLACEHOLDER');
+
+async function apiGet(endpoint) {
+  if (isDemo()) return null;
+  const r = await fetch(CFG.BASE44_API_URL + endpoint, {
+    headers: {'Authorization': `Bearer ${CFG.BASE44_API_KEY}`, 'Content-Type': 'application/json'}
+  });
+  if (!r.ok) throw new Error('API ' + r.status);
+  return r.json();
+}
+
+async function webhook(url, body) {
+  if (url.includes('PLACEHOLDER')) {
+    console.log('[Webhook DEMO]', url, body);
+    return {success:true};
+  }
+  const r = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+  if (!r.ok) throw new Error('Webhook ' + r.status);
+  return {success:true};
+}
+
+async function loadAuftraege() {
+  if (isDemo()) return DEMO.map(a => ({...a, pos: a.pos.map(p => ({...p}))}));
+  const d = await apiGet('/tables/Auftraege/records');
+  return d?.records || [];
+}
+
+async function loadAuftrag(id) {
+  if (isDemo()) { const a = DEMO.find(x => x.id === id); return a ? {...a, pos: a.pos.map(p => ({...p}))} : null; }
+  return apiGet('/tables/Auftraege/records/' + id);
+}
+
+async function loadByToken(token) {
+  if (isDemo()) { const a = DEMO.find(x => x.token === token); return a ? {...a, pos: a.pos.map(p => ({...p}))} : null; }
+  const d = await apiGet('/tables/Auftraege/records?filter=webhook_token:' + token);
+  return d?.records?.[0] || null;
+}
+
+// ============================================================
+//  UTILITIES
+// ============================================================
+const eur = n => n > 0 ? new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(n) : '—';
+const dt  = d => d ? new Intl.DateTimeFormat('de-DE').format(new Date(d)) : '—';
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const totalNetto = pos => pos.reduce((s,p) => s + (parseFloat(p.menge)||0)*(parseFloat(p.ep)||0), 0);
+const badge = s => `<span class="badge ${STATUS_CLASS[s]||'b-anfrage'}">${esc(s)}</span>`;
+
+function toast(msg, type='ok') {
+  const icons = {ok:'✓', err:'✕', info:'ℹ'};
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${icons[type]}</span><span>${esc(msg)}</span>`;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(() => t.remove(), 3700);
+}
+
+let _modal = null;
+function openModal(html) {
+  closeModal();
+  _modal = document.createElement('div');
+  _modal.className = 'overlay';
+  _modal.id = 'modal';
+  _modal.innerHTML = `<div class="modal">${html}</div>`;
+  _modal.addEventListener('click', e => { if (e.target === _modal) closeModal(); });
+  document.body.appendChild(_modal);
+}
+function closeModal() { if (_modal) { _modal.remove(); _modal = null; } }
+
+function skeleton() {
+  return `<div class="sk sk-card"></div><div class="sk sk-card"></div><div class="sk sk-card" style="height:180px"></div>`;
+}
+
+// ============================================================
+//  ROUTER
+// ============================================================
+function getRoute() {
+  const h = window.location.hash.replace('#/','').replace('#','') || 'dashboard';
+  const parts = h.split('/').filter(Boolean);
+  return { name: parts[0], params: parts.slice(1) };
+}
+
+async function navigate(hash) {
+  window.location.hash = '#/' + hash;
+}
+
+async function router() {
+  const route = getRoute();
+  const page  = document.getElementById('page');
+  const isPortal = route.name === 'portal';
+
+  // Sidebar nav active
+  document.querySelectorAll('.s-link').forEach(a => {
+    const r = a.dataset.route || '';
+    a.classList.toggle('active',
+      r === route.name || (route.name === 'auftrag' && r === 'dashboard') ||
+      (isPortal && r.startsWith('portal'))
+    );
+  });
+
+  // Hide sidebar for portal
+  document.getElementById('sidebar').style.display = isPortal ? 'none' : '';
+  document.getElementById('content').style.marginLeft = isPortal ? '0' : '';
+
+  page.innerHTML = skeleton();
+  page.className = 'fade';
+
+  if (route.name === 'dashboard')    { await renderDashboard(page); }
+  else if (route.name === 'neuer-auftrag') { renderForm(page); }
+  else if (route.name === 'auftrag') { await renderDetail(page, route.params[0]); }
+  else if (route.name === 'portal')  { await renderPortal(page, route.params[0]); }
+  else { page.innerHTML = `<div class="card card-body" style="text-align:center;padding:3rem"><h2>404</h2><p class="muted">Seite nicht gefunden.</p><a class="btn btn-primary" style="margin-top:1rem;display:inline-flex" onclick="navigate('dashboard')">Dashboard</a></div>`; }
+}
+
+window.addEventListener('hashchange', router);
+window.addEventListener('DOMContentLoaded', router);
+
+// ============================================================
+//  PAGE: DASHBOARD
+// ============================================================
+async function renderDashboard(el) {
+  S.auftraege = await loadAuftraege();
+  const d = S.auftraege;
+  const heute = new Date();
+  const wo = new Date(); wo.setDate(heute.getDate() - heute.getDay() + 1);
+
+  const kpis = [
+    {label:'Offene Anfragen',   val: d.filter(a=>a.status==='Anfrage').length,          sub:'Warten auf Angebot',  col:'#3B82F6', icon:'📥'},
+    {label:'Offene Angebote',   val: d.filter(a=>a.status==='Angebot versendet').length, sub:'Beim Kunden',         col:'#F59E0B', icon:'📤'},
+    {label:'Aufträge diese Woche', val: d.filter(a=>a.ausfuehrung && new Date(a.ausfuehrung)>=wo).length, sub:'In Ausführung', col:'#10B981', icon:'🔧'},
+    {label:'Offene Rechnungen', val: d.filter(a=>a.status==='Rechnung versendet').length,sub:'Zahlung ausstehend',  col:'#EF4444', icon:'🧾'},
+  ];
+
+  el.innerHTML = `
+    <div class="page-head">
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub">Übersicht aller Aufträge und offenen Vorgänge ${isDemo()?'<span style="background:#FFFBEB;color:#92400E;font-size:.7rem;padding:2px 8px;border-radius:20px;margin-left:8px;font-family:\'IBM Plex Mono\',monospace;border:1px solid #FDE68A">DEMO-MODUS</span>':''}</div>
+    </div>
+    <div class="kpi-grid">
+      ${kpis.map(k=>`
+        <div class="kpi">
+          <div class="kpi-accent" style="background:${k.col}"></div>
+          <div class="kpi-label">${k.label}</div>
+          <div class="kpi-value">${k.val}</div>
+          <div class="kpi-foot">${k.sub}</div>
+          <div class="kpi-icon">${k.icon}</div>
+        </div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <h2>Alle Aufträge</h2>
+        <button class="btn btn-primary btn-sm" onclick="navigate('neuer-auftrag')">+ Neue Anfrage</button>
+      </div>
+      <div class="chips" id="chips"></div>
+      <div style="overflow-x:auto">
+        <table class="tbl" id="tbl">
+          <thead><tr>
+            <th data-c="titel">Auftrag</th>
+            <th data-c="kunde">Kunde</th>
+            <th data-c="status">Status</th>
+            <th data-c="brutto" style="text-align:right">Betrag</th>
+            <th data-c="wunschtermin">Termin</th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>`;
+
+  buildChips(); renderTable();
+
+  document.getElementById('chips').addEventListener('click', e => {
+    const c = e.target.closest('.chip'); if (!c) return;
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+    c.classList.add('on'); S.filter = c.dataset.f; renderTable();
+  });
+
+  document.getElementById('tbl').querySelector('thead').addEventListener('click', e => {
+    const th = e.target.closest('th[data-c]'); if (!th) return;
+    const col = th.dataset.c;
+    S.sort = S.sort.col===col ? {col,dir:S.sort.dir==='asc'?'desc':'asc'} : {col,dir:'asc'};
+    document.querySelectorAll('.tbl thead th').forEach(h=>h.classList.remove('s-col'));
+    th.classList.add('s-col');
+    renderTable();
+  });
+}
+
+function buildChips() {
+  const all = S.auftraege;
+  const filters = [['alle', 'Alle', all.length], ...STATUS_ORDER.map(s=>[s,s,all.filter(a=>a.status===s).length]).filter(([,, n])=>n>0)];
+  document.getElementById('chips').innerHTML = filters.map(([f,l,n])=>
+    `<button class="chip${f===S.filter?' on':''}" data-f="${esc(f)}">${esc(l)} (${n})</button>`
+  ).join('');
+}
+
+function renderTable() {
+  const tbody = document.getElementById('tbody');
+  let rows = S.auftraege.filter(a => S.filter==='alle' || a.status===S.filter);
+  rows = rows.sort((a,b)=>{
+    let va=a[S.sort.col], vb=b[S.sort.col];
+    if (S.sort.col==='kunde') { va=a.kunde?.name||''; vb=b.kunde?.name||''; }
+    if (typeof va==='string') va=va.toLowerCase();
+    if (typeof vb==='string') vb=vb.toLowerCase();
+    if (va<vb) return S.sort.dir==='asc'?-1:1;
+    if (va>vb) return S.sort.dir==='asc'?1:-1;
+    return 0;
+  });
+  tbody.innerHTML = rows.length===0
+    ? `<tr><td colspan="5" style="text-align:center;padding:2.5rem;color:var(--muted)">Keine Aufträge gefunden</td></tr>`
+    : rows.map(a=>`
+      <tr onclick="navigate('auftrag/${esc(a.id)}')">
+        <td><div style="font-weight:500">${esc(a.titel)}</div><div class="muted" style="font-size:.75rem">${esc((a.beschreibung||'').slice(0,55))}…</div></td>
+        <td><div>${esc(a.kunde?.name||'—')}</div><div class="muted" style="font-size:.75rem">${esc(a.kunde?.firma||'')}</div></td>
+        <td>${badge(a.status)}</td>
+        <td class="mono" style="text-align:right">${a.brutto>0?eur(a.brutto):'<span class="muted">—</span>'}</td>
+        <td class="muted">${dt(a.wunschtermin)}</td>
+      </tr>`).join('');
+}
+
+// ============================================================
+//  PAGE: NEUE ANFRAGE
+// ============================================================
+function renderForm(el) {
+  el.innerHTML = `
+    <div class="page-head">
+      <div class="breadcrumb"><a onclick="navigate('dashboard')">Dashboard</a><span>›</span><span>Neue Anfrage</span></div>
+      <div class="page-title">Neue Anfrage erfassen</div>
+      <div class="page-sub">Kunden- und Auftragsdetails eintragen</div>
+    </div>
+    <div class="card" style="max-width:680px">
+      <div class="card-head"><h2>Kundendaten</h2></div>
+      <div class="card-body">
+        <div class="form-row">
+          <div class="fg"><label class="fl">Ansprechpartner<span class="req">*</span></label><input class="fi" id="f-name" placeholder="Max Mustermann"></div>
+          <div class="fg"><label class="fl">Firmenname</label><input class="fi" id="f-firma" placeholder="Muster GmbH"></div>
+        </div>
+        <div class="form-row">
+          <div class="fg"><label class="fl">E-Mail<span class="req">*</span></label><input class="fi" id="f-email" type="email" placeholder="max@beispiel.de"></div>
+          <div class="fg"><label class="fl">Telefon</label><input class="fi" id="f-tel" type="tel" placeholder="0151 12345678"></div>
+        </div>
+      </div>
+      <div class="card-head"><h2>Auftragsdetails</h2></div>
+      <div class="card-body">
+        <div class="fg"><label class="fl">Auftragstitel<span class="req">*</span></label><input class="fi" id="f-titel" placeholder="z.B. Elektroinstallation Neubau"></div>
+        <div class="fg"><label class="fl">Beschreibung</label><textarea class="ft" id="f-desc" placeholder="Details, Besonderheiten, Umfang…"></textarea></div>
+        <div class="form-row">
+          <div class="fg"><label class="fl">Wunschtermin</label><input class="fi" id="f-termin" type="date"></div>
+          <div class="fg"><label class="fl">Quelle</label>
+            <select class="fs" id="f-quelle"><option>Website</option><option>Empfehlung</option><option>Kaltakquise</option><option>Sonstiges</option></select>
+          </div>
+        </div>
+        <div style="display:flex;gap:.75rem;margin-top:1.25rem">
+          <button class="btn btn-primary" id="btn-submit">Anfrage speichern &amp; absenden</button>
+          <button class="btn btn-ghost" onclick="navigate('dashboard')">Abbrechen</button>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('btn-submit').addEventListener('click', async () => {
+    const name  = document.getElementById('f-name').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    const titel = document.getElementById('f-titel').value.trim();
+    if (!name||!email||!titel) { toast('Bitte alle Pflichtfelder ausfüllen.','err'); return; }
+    const btn = document.getElementById('btn-submit');
+    btn.disabled=true; btn.textContent='Wird gesendet…';
+    try {
+      await webhook(CFG.WEBHOOK_NEUE_ANFRAGE, {
+        timestamp: new Date().toISOString(),
+        kunde: { name, firma: document.getElementById('f-firma').value.trim(), email, tel: document.getElementById('f-tel').value.trim() },
+        auftrag: { titel, beschreibung: document.getElementById('f-desc').value.trim(), wunschtermin: document.getElementById('f-termin').value, quelle: document.getElementById('f-quelle').value, status: 'Anfrage' }
+      });
+      toast('Anfrage erfolgreich gespeichert und übertragen!','ok');
+      setTimeout(() => navigate('dashboard'), 1200);
+    } catch(e) {
+      toast('Fehler beim Senden. Webhook-URL prüfen.','err');
+      btn.disabled=false; btn.textContent='Anfrage speichern & absenden';
+    }
+  });
+}
+
+// ============================================================
+//  PAGE: AUFTRAG DETAIL
+// ============================================================
+async function renderDetail(el, id) {
+  const a = await loadAuftrag(id);
+  if (!a) { el.innerHTML=`<div class="card card-body"><p>Auftrag nicht gefunden. <a onclick="navigate('dashboard')">Zurück</a></p></div>`; return; }
+
+  S.pos[id] = (a.pos||[]).map(p=>({...p}));
+  const step = STATUS_ORDER.indexOf(a.status);
+
+  el.innerHTML = `
+    <div class="page-head" style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem">
+      <div>
+        <div class="breadcrumb"><a onclick="navigate('dashboard')">Dashboard</a><span>›</span><span>Auftrag #${esc(a.id)}</span></div>
+        <div class="page-title">${esc(a.titel)}</div>
+        <div style="display:flex;align-items:center;gap:.6rem;margin-top:5px">${badge(a.status)}<span class="muted" style="font-size:.78rem">#${esc(a.id)}</span></div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-head"><h2>Auftragsstatus</h2></div>
+      <div class="card-body" style="padding:.75rem 1.25rem">
+        <div class="tl">
+          ${STATUS_ORDER.map((s,i)=>{
+            const cls = i<step?'done':(i===step?'active':'');
+            return `<div class="tl-step ${cls}"><div class="tl-dot">${i<step?'✓':i===step?'●':''}</div><div class="tl-lbl">${esc(s)}</div></div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- Meta + Actions -->
+    <div class="detail-grid">
+      <div class="card">
+        <div class="card-head"><h2>Kundendaten &amp; Details</h2></div>
+        <div class="card-body">
+          ${[['Name',a.kunde?.name],['Firma',a.kunde?.firma],['E-Mail',a.kunde?.email?`<a href="mailto:${esc(a.kunde.email)}" style="color:var(--blue)">${esc(a.kunde.email)}</a>`:null],['Telefon',a.kunde?.tel],['Wunschtermin',dt(a.wunschtermin)],['Ausführung',dt(a.ausfuehrung)]].map(([l,v])=>v?`<div class="meta-row"><div class="ml">${l}</div><div class="mv">${v}</div></div>`:'').join('')}
+          <div class="div"></div>
+          <p style="font-size:.84rem;color:var(--muted);line-height:1.6">${esc(a.beschreibung||'—')}</p>
+          ${a.token ? `<div class="div"></div>
+          <div style="font-size:.72rem;color:var(--faint);margin-bottom:4px">Kundenportal-Link</div>
+          <button class="copy-link" id="copy-btn" title="Klicken zum Kopieren">${window.location.origin}/#/portal/${esc(a.token)}</button>` : ''}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Aktionen</h2></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:.6rem">
+          ${a.status==='Anfrage'?`<button class="btn btn-amber" id="act-angebot">📤 Angebot absenden</button>`:''}
+          ${a.status==='Angebot versendet'?`<button class="btn btn-primary" id="act-annehmen">✅ Als angenommen markieren</button>`:''}
+          ${['Angebot angenommen','In Bearbeitung'].includes(a.status)?`<button class="btn btn-primary" id="act-abschluss">✔️ Als abgeschlossen markieren</button>`:''}
+          ${a.status==='Abgeschlossen'?`<button class="btn btn-amber" id="act-rechnung">🧾 Rechnung erstellen &amp; versenden</button>`:''}
+          ${a.status==='Rechnung versendet'?`<button class="btn btn-success" id="act-bezahlt">💶 Als bezahlt markieren</button>`:''}
+          <button class="btn btn-ghost btn-sm" onclick="copyPortal('${esc(a.token||'')}')">🔗 Portal-Link kopieren</button>
+          <button class="btn btn-danger btn-sm" id="act-storno">Auftrag stornieren</button>
+          <div class="div"></div>
+          <div>
+            <div style="font-size:.72rem;color:var(--muted);margin-bottom:4px">Angebotssumme</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:1.4rem;font-weight:600;letter-spacing:-.02em;color:var(--navy)">${a.brutto>0?eur(a.brutto):'<span style="font-size:.95rem;color:var(--muted)">Noch kein Angebot</span>'}</div>
+            ${a.brutto>0?`<div style="font-size:.75rem;color:var(--muted)">${eur(a.netto)} netto · ${a.mwst}% MwSt.</div>`:''}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Positionen -->
+    <div class="card">
+      <div class="card-head"><h2>Leistungspositionen</h2><button class="btn btn-ghost btn-sm" id="add-pos">+ Position</button></div>
+      <div style="overflow-x:auto">
+        <table class="ptbl"><thead><tr>
+          <th style="width:38%">Bezeichnung</th><th>Menge</th><th>Einheit</th>
+          <th style="text-align:right">EP (netto)</th><th style="text-align:right">GP (netto)</th><th></th>
+        </tr></thead>
+        <tbody id="pos-tbody"></tbody>
+        <tfoot id="pos-tfoot"></tfoot>
+        </table>
+      </div>
+    </div>`;
+
+  renderPos(id);
+  bindDetailActions(a, id);
+
+  document.getElementById('copy-btn')?.addEventListener('click', () => copyPortal(a.token));
+  document.getElementById('add-pos').addEventListener('click', () => {
+    S.pos[id].push({id:'new_'+Date.now(), bez:'', menge:1, einheit:'Stk', ep:0});
+    renderPos(id);
+  });
+}
+
+function renderPos(id) {
+  const pos = S.pos[id]||[];
+  const tbody = document.getElementById('pos-tbody');
+  const tfoot = document.getElementById('pos-tfoot');
+  if (!tbody) return;
+
+  tbody.innerHTML = pos.length===0
+    ? `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted);font-style:italic">Noch keine Positionen — klicken Sie auf "+ Position"</td></tr>`
+    : pos.map((p,i)=>`<tr>
+        <td><input class="edit-inp" data-i="${i}" data-f="bez" value="${esc(p.bez||'')}" placeholder="Bezeichnung"></td>
+        <td><input class="edit-inp" data-i="${i}" data-f="menge" type="number" min="0" step="0.01" value="${p.menge||''}" style="width:70px"></td>
+        <td><select class="edit-sel" data-i="${i}" data-f="einheit">${['Std','Stk','m²','m','Psch'].map(u=>`<option${p.einheit===u?' selected':''}>${u}</option>`).join('')}</select></td>
+        <td style="text-align:right"><input class="edit-inp" data-i="${i}" data-f="ep" type="number" min="0" step="0.01" value="${p.ep||''}" style="width:90px;text-align:right"></td>
+        <td style="text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500">${eur((parseFloat(p.menge)||0)*(parseFloat(p.ep)||0))}</td>
+        <td><button class="del-btn" data-di="${i}" title="Löschen">✕</button></td>
+      </tr>`).join('');
+
+  const netto  = totalNetto(pos);
+  const mwst   = netto*0.19;
+  const brutto = netto+mwst;
+  tfoot.innerHTML = `
+    <tr><td colspan="4" style="text-align:right;color:var(--muted);font-weight:400">Netto:</td><td colspan="2" style="text-align:right;font-family:'IBM Plex Mono',monospace">${eur(netto)}</td></tr>
+    <tr><td colspan="4" style="text-align:right;color:var(--muted);font-weight:400">MwSt. 19%:</td><td colspan="2" style="text-align:right;font-family:'IBM Plex Mono',monospace;color:var(--muted)">${eur(mwst)}</td></tr>
+    <tr><td colspan="4" style="text-align:right">Brutto gesamt:</td><td colspan="2" style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:1rem;color:var(--navy)">${eur(brutto)}</td></tr>`;
+
+  tbody.querySelectorAll('.edit-inp,.edit-sel').forEach(inp => {
+    inp.addEventListener('input', () => {
+      S.pos[id][+inp.dataset.i][inp.dataset.f] = inp.value;
+      renderPos(id);
+    });
+  });
+  tbody.querySelectorAll('.del-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      S.pos[id].splice(+btn.dataset.di,1); renderPos(id);
+    });
+  });
+}
+
+function bindDetailActions(a, id) {
+  async function statusUpdate(von, nach, confirmMsg) {
+    if (confirmMsg && !confirm(confirmMsg)) return;
+    try {
+      await webhook(CFG.WEBHOOK_STATUS_UPDATE, {auftrag_id:id, alter_status:von, neuer_status:nach, timestamp:new Date().toISOString()});
+      toast(`Status aktualisiert: ${nach}`,'ok');
+      setTimeout(() => navigate('auftrag/'+id), 1200);
+    } catch(e) { toast('Fehler beim Statuswechsel.','err'); }
+  }
+
+  document.getElementById('act-angebot')?.addEventListener('click', () => {
+    const pos = S.pos[id];
+    if (!pos.length) { toast('Zuerst Positionen hinzufügen.','err'); return; }
+    const n = totalNetto(pos);
+    openModal(`
+      <div class="m-head"><h3>📤 Angebot absenden</h3><button class="btn btn-ghost btn-sm" onclick="closeModal()">✕</button></div>
+      <div class="m-body">
+        <p>Das Angebot wird an <strong>${esc(a.kunde?.email)}</strong> versendet.</p>
+        <p style="margin-top:.5rem;font-size:.84rem;color:var(--muted)">${pos.length} Position(en) · <strong>${eur(n*1.19)}</strong> brutto</p>
+        <p style="margin-top:.75rem;font-size:.78rem;color:var(--faint)">Make.com versendet die E-Mail und aktualisiert den Status automatisch.</p>
+      </div>
+      <div class="m-foot">
+        <button class="btn btn-ghost" onclick="closeModal()">Abbrechen</button>
+        <button class="btn btn-amber" id="mc-angebot">Jetzt absenden</button>
+      </div>`);
+    document.getElementById('mc-angebot').addEventListener('click', async () => {
+      document.getElementById('mc-angebot').disabled=true;
+      try {
+        await webhook(CFG.WEBHOOK_ANGEBOT_SENDEN, {auftrag_id:id, positionen:pos, timestamp:new Date().toISOString()});
+        await webhook(CFG.WEBHOOK_STATUS_UPDATE, {auftrag_id:id, alter_status:a.status, neuer_status:'Angebot versendet', timestamp:new Date().toISOString()});
+        closeModal(); toast('Angebot versendet! Make.com übernimmt.','ok');
+        setTimeout(() => navigate('auftrag/'+id), 1500);
+      } catch(e) { toast('Fehler beim Versenden.','err'); document.getElementById('mc-angebot').disabled=false; }
+    });
+  });
+
+  document.getElementById('act-annehmen')?.addEventListener('click',  () => statusUpdate(a.status,'Angebot angenommen'));
+  document.getElementById('act-abschluss')?.addEventListener('click', () => statusUpdate(a.status,'Abgeschlossen'));
+  document.getElementById('act-rechnung')?.addEventListener('click',  () => statusUpdate(a.status,'Rechnung versendet'));
+  document.getElementById('act-bezahlt')?.addEventListener('click',   () => statusUpdate(a.status,'Bezahlt'));
+  document.getElementById('act-storno')?.addEventListener('click',    () => statusUpdate(a.status,'Storniert','Auftrag wirklich stornieren?'));
+}
+
+// ============================================================
+//  PAGE: KUNDENPORTAL
+// ============================================================
+async function renderPortal(el, token) {
+  if (!token) { el.innerHTML=`<div class="portal-wrap"><div style="text-align:center;padding:3rem"><p>Ungültiger Portal-Link.</p></div></div>`; return; }
+
+  const a = await loadByToken(token);
+  if (!a) {
+    el.innerHTML=`<div class="portal-wrap"><div style="background:#fff;border-radius:var(--r);padding:3rem;text-align:center;box-shadow:var(--shadow)"><div style="font-size:2rem;margin-bottom:1rem">🔍</div><h2 style="font-family:\'Syne\',sans-serif">Angebot nicht gefunden</h2><p style="color:var(--muted);margin-top:.5rem">Dieser Link ist abgelaufen oder wurde bereits verarbeitet.</p></div></div>`;
+    return;
+  }
+
+  const pos   = a.pos||[];
+  const netto = totalNetto(pos);
+  const mwst  = netto*(a.mwst||19)/100;
+  const brutto= netto+mwst;
+  const done  = ['Angebot angenommen','In Bearbeitung','Abgeschlossen','Rechnung versendet','Bezahlt'].includes(a.status);
+
+  el.innerHTML = `
+    <div class="portal-wrap">
+      <div class="portal-hd">
+        <div class="portal-logo"><div class="mark">⚡</div>HandwerkOS</div>
+        <div class="portal-title">${esc(a.titel)}</div>
+        <div class="portal-sub">Angebot für ${esc(a.kunde?.name||'Sie')}</div>
+      </div>
+      <div class="portal-body">
+        ${done ? `
+          <div class="success-wrap">
+            <div class="success-icon">✓</div>
+            <h2 style="font-family:'Syne',sans-serif">Angebot bereits angenommen</h2>
+            <p style="color:var(--muted);margin-top:.5rem">Dieses Angebot wurde bereits bestätigt.<br>Wir melden uns in Kürze bei Ihnen.</p>
+          </div>` : `
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1.25rem;font-size:.84rem">
+            <div><div style="color:var(--muted);font-size:.72rem;margin-bottom:2px">Angebotsdatum</div><strong>${dt(a.angebotsdatum)}</strong></div>
+            <div style="text-align:right"><div style="color:var(--muted);font-size:.72rem;margin-bottom:2px">Wunschtermin</div><strong>${dt(a.wunschtermin)}</strong></div>
+          </div>
+          ${a.beschreibung?`<p style="font-size:.84rem;color:var(--muted);line-height:1.7;border-left:3px solid var(--amber);padding-left:.9rem;margin-bottom:1.25rem">${esc(a.beschreibung)}</p>`:''}
+          <div style="font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.6rem">Leistungspositionen</div>
+          <table class="ptbl" style="margin-bottom:1.5rem">
+            <thead><tr><th>Bezeichnung</th><th>Menge</th><th>Einheit</th><th style="text-align:right">EP</th><th style="text-align:right">GP</th></tr></thead>
+            <tbody>
+              ${pos.length>0?pos.map(p=>`<tr>
+                <td style="font-weight:500">${esc(p.bez)}</td>
+                <td>${p.menge}</td><td style="color:var(--muted)">${esc(p.einheit)}</td>
+                <td style="text-align:right;font-family:'IBM Plex Mono',monospace">${eur(p.ep)}</td>
+                <td style="text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500">${eur((parseFloat(p.menge)||0)*(parseFloat(p.ep)||0))}</td>
+              </tr>`).join(''):`<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--muted)">Positionen folgen nach Besichtigung</td></tr>`}
+            </tbody>
+            ${netto>0?`<tfoot>
+              <tr><td colspan="4" style="text-align:right;color:var(--muted);font-weight:400">Netto:</td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;color:var(--muted)">${eur(netto)}</td></tr>
+              <tr><td colspan="4" style="text-align:right;color:var(--muted);font-weight:400">MwSt. ${a.mwst||19}%:</td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;color:var(--muted)">${eur(mwst)}</td></tr>
+              <tr><td colspan="4" style="text-align:right">Gesamt brutto:</td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:1rem;color:var(--navy)">${eur(brutto)}</td></tr>
+            </tfoot>`:''}
+          </table>
+          <div class="portal-accept">
+            <div style="font-size:1.6rem;margin-bottom:.4rem">🤝</div>
+            <h3 style="font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:.3rem">Angebot annehmen</h3>
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.1rem">Mit einem Klick bestätigen Sie dieses Angebot verbindlich.<br>Wir melden uns umgehend zur Terminvereinbarung.</p>
+            <button class="btn btn-amber btn-lg" id="btn-accept">✅ Angebot verbindlich annehmen</button>
+          </div>`}
+      </div>
+    </div>`;
+
+  document.getElementById('btn-accept')?.addEventListener('click', () => {
+    openModal(`
+      <div class="m-head"><h3>Angebot bestätigen</h3></div>
+      <div class="m-body">
+        <p>Möchten Sie das Angebot <strong>${esc(a.titel)}</strong> verbindlich annehmen?</p>
+        ${brutto>0?`<p style="margin-top:.6rem;font-size:.84rem;color:var(--muted)">Angebotssumme: <strong>${eur(brutto)} brutto</strong></p>`:''}
+      </div>
+      <div class="m-foot">
+        <button class="btn btn-ghost" onclick="closeModal()">Zurück</button>
+        <button class="btn btn-amber" id="mc-accept">Jetzt bestätigen</button>
+      </div>`);
+
+    document.getElementById('mc-accept').addEventListener('click', async () => {
+      const btn = document.getElementById('mc-accept');
+      btn.disabled=true; btn.textContent='Wird übertragen…';
+      try {
+        await webhook(CFG.WEBHOOK_FREIGABE, {token, action:'accepted', timestamp:new Date().toISOString()});
+        closeModal();
+        document.querySelector('.portal-wrap').innerHTML = `
+          <div class="portal-hd" style="border-radius:var(--r)">
+            <div class="portal-logo"><div class="mark">⚡</div>HandwerkOS</div>
+            <div class="portal-title">Vielen Dank für Ihr Vertrauen!</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r)">
+            <div class="success-wrap">
+              <div class="success-icon" style="width:76px;height:76px;font-size:2rem">✓</div>
+              <h2 style="font-family:'Syne',sans-serif;font-size:1.3rem">Angebot erfolgreich angenommen!</h2>
+              <p style="color:var(--muted);margin-top:.75rem;line-height:1.7;max-width:340px;margin-inline:auto">
+                Wir melden uns in Kürze bei Ihnen zur Abstimmung des genauen Termins.
+              </p>
+            </div>
+          </div>`;
+      } catch(e) {
+        toast('Fehler beim Übertragen. Bitte erneut versuchen.','err');
+        btn.disabled=false; btn.textContent='Jetzt bestätigen';
+      }
+    });
+  });
+}
+
+// ============================================================
+//  GLOBAL HELPERS (window-scope für inline onclick)
+// ============================================================
+window.navigate    = navigate;
+window.closeModal  = closeModal;
+window.copyPortal  = function(token) {
+  if (!token) return;
+  navigator.clipboard.writeText(`${window.location.origin}/#/portal/${token}`)
+    .then(() => toast('Portal-Link kopiert!','info'))
+    .catch(() => toast('Konnte nicht kopieren.','err'));
+};
+</script>
+</body>
+</html>
