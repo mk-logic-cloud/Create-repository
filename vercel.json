@@ -1,0 +1,7 @@
+{
+  "crons": [
+    { "path": "/api/motivation/send?slot=0430utc", "schedule": "30 4 * * *" },
+    { "path": "/api/motivation/send?slot=0530utc", "schedule": "30 5 * * *" },
+    { "path": "/api/motivation/send?slot=0630utc", "schedule": "30 6 * * *" }
+  ]
+}
