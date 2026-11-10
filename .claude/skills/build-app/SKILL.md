@@ -32,9 +32,10 @@ Spezifikation, Tests und eine ehrliche Liste offener Schritte.
 9. **Abschluss:** `/final-audit` ausführen.
 
 ## 5. Spezialagenten
-- `Plan` — Architektur und Phasenplan bei größeren Vorhaben.
-- `Explore` — bestehende Codebasis kartieren, bevor geändert wird.
-- `general-purpose` — unabhängiger Security-Review der Server Actions und RLS (Auftrag: „Finde Wege, fremde Daten zu lesen oder zu ändern“).
+- Agent `software-engineer`: Implementierung, Tests und Prüfbefehle (Schritte 3–7). Er ist der einzige schreibende Agent und wird nie parallel zu sich selbst auf demselben Verzeichnis gestartet.
+- Agent `red-team-auditor`: unabhängiger Sicherheitsreview der Server Actions und RLS („Finde Wege, fremde Daten zu lesen oder zu ändern“) und Abschlussprüfung über `/final-audit`.
+- Eingebauter Agent `Plan`: Architektur und Phasenplan bei größeren Vorhaben.
+- Eingebauter Agent `Explore`: bestehende Codebasis kartieren, bevor geändert wird.
 
 ## 6. Qualitätskontrolle
 - [ ] Keine geheimen Schlüssel im Client-Bundle oder Repo; nur Publishable Key.

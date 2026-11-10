@@ -30,8 +30,8 @@ Ergebnis ist Entscheidungsgrundlage, keine Meinung.
 7. **Optional ablegen:** Auf Wunsch als Eintrag im Research-Verzeichnis des Command Centers (Titel, Zusammenfassung, Quelle, Tags, Konfidenz).
 
 ## 5. Spezialagenten
-- `Explore` — nur wenn interne Dateien/Repos durchsucht werden müssen.
-- `general-purpose` — bei Tiefe `tief`: je Teilfrage ein Agent parallel, Auftrag: „Belege sammeln, Quelle + Zitat + Datum liefern, nicht bewerten“. Synthese bleibt beim Hauptagenten.
+- Agent `research-analyst`: führt die Recherche durch. Bei Tiefe `tief` startet Wayne Core je Teilfrage einen eigenen `research-analyst`, parallel, höchstens 4. Die Synthese bleibt bei Wayne Core.
+- Eingebauter Agent `Explore`: nur wenn interne Dateien oder Repositories durchsucht werden müssen.
 
 ## 6. Qualitätskontrolle
 - [ ] Jede Zahl und jedes Zitat hat eine Quelle mit Datum.

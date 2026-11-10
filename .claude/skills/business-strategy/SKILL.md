@@ -32,9 +32,10 @@ sichtbaren Annahmen und echten Alternativen.
 9. **Dokumentieren:** Entscheidung im Entscheidungsprotokoll, Initiativen als Projekte/Meilensteine anlegen (auf Wunsch).
 
 ## 5. Spezialagenten
-- `general-purpose` — parallele Markt- und Wettbewerbsrecherche (je Wettbewerber ein Auftrag).
-- `Plan` — Zerlegung der Umsetzung in Phasen und Abhängigkeiten.
-- Skill `/red-team` für die Gegenprüfung.
+- Agent `research-analyst`: Markt- und Wettbewerbsfakten (Schritt 2), bei mehreren Wettbewerbern parallel.
+- Agent `business-analyst`: Optionen, Bewertung, Empfehlung und Umsetzungsplan (Schritte 3–7), nach der Recherche.
+- Agent `financial-analyst`: Wirtschaftlichkeit der Optionen, wenn Budget oder Erlöse entscheidend sind.
+- Agent `red-team-auditor`: Gegenprüfung in Schritt 8 (über `/red-team`).
 
 ## 6. Qualitätskontrolle
 - [ ] Ziel ist messbar und terminiert.

@@ -29,8 +29,10 @@ und was verhandelt werden sollte. Ergebnis ist eine Entscheidungshilfe, **keine 
 7. **Empfehlung:** Unterschreiben / nach Änderungen / nicht ohne Anwalt.
 
 ## 5. Spezialagenten
-- `general-purpose` — unabhängige Zweitlesung nur der 🔴-Klauseln („Finde Gründe, warum diese Einschätzung falsch ist“).
-- Skill `/deep-research` für Rechtslage oder Marktüblichkeit, mit Quellen.
+- Agent `legal-analyst`: Prüfung der Klauseln, Ampel und Formulierungsvorschläge (Schritte 1–6).
+- Agent `financial-analyst`: parallel, wenn Vergütung, Preisanpassung oder Vertragsstrafen wesentlich sind.
+- Agent `red-team-auditor`: unabhängige Zweitlesung nur der 🔴-Klauseln („Finde Gründe, warum diese Einschätzung falsch ist“).
+- Agent `research-analyst`: Rechtslage oder Marktüblichkeit mit Quellen, bei Bedarf.
 
 ## 6. Qualitätskontrolle
 - [ ] Jede Bewertung zitiert die konkrete Klausel (§/Absatz).
