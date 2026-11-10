@@ -27,8 +27,8 @@ Sicherstellen, dass abgeliefert wird, was zugesagt wurde — geprüft, nicht ang
 7. **Urteil:** Freigabe / Freigabe mit Auflagen / keine Freigabe — mit Begründung.
 
 ## 5. Spezialagenten
-- `general-purpose` — unabhängiger Zweitprüfer für die Anforderungsmatrix (bekommt nur Auftrag + Ergebnis).
-- Skill `/red-team` bei sicherheits- oder geschäftskritischen Ergebnissen.
+- Agent `red-team-auditor`: erstellt die Anforderungsmatrix und führt die Prüfbefehle aus. Er erhält nur Auftrag und Ergebnis.
+- Wayne Core prüft das Urteil des Auditors und erteilt die finale Freigabeempfehlung. Externe Schritte (Merge, Release) gibt nur der Nutzer frei.
 
 ## 6. Qualitätskontrolle
 - [ ] Jede Anforderung hat einen Nachweis oder ist ehrlich als offen markiert.

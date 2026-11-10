@@ -28,7 +28,8 @@ Training datenbasiert steuern: Fortschritt erkennen, Überlastung vermeiden, nä
 6. **Warnhinweise:** Schmerzen, Brustdruck, Schwindel, ungewöhnliche Werte → ärztlich abklären, Plan pausieren.
 
 ## 5. Spezialagenten
-- Keine erforderlich. Bei großen Datenexporten `general-purpose` zur Aufbereitung (CSV → Wochentabelle) einsetzen.
+- **Wayne Core führt diesen Skill direkt aus.** Ein Spezialagent ist nicht erforderlich.
+- Große Datenexporte (CSV → Wochentabelle) bereitet Wayne Core selbst per Skript auf. Es gibt keinen Fachagenten für Gesundheit, und der `financial-analyst` wird hierfür bewusst nicht zweckentfremdet.
 
 ## 6. Qualitätskontrolle
 - [ ] Trends basieren auf ≥ 2 Wochen Daten, sonst als vorläufig markiert.

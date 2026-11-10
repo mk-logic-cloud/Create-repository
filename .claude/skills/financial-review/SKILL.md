@@ -29,8 +29,9 @@ Keine Steuer- oder Anlageberatung — bei solchen Fragen auf Fachberatung verwei
 6. **Plausibilität gegenrechnen:** Zentrale Zahlen ein zweites Mal unabhängig berechnen (z. B. per Skript).
 
 ## 5. Spezialagenten
-- `general-purpose` — unabhängige Zweitberechnung der Kernkennzahlen aus den Rohdaten (Vier-Augen-Prinzip).
-- Skill `/red-team` bei Investitionsentscheidungen > Wesentlichkeitsgrenze.
+- Agent `financial-analyst`: Datenprüfung, Kennzahlen, Abweichungen und Risiken (Schritte 1–5).
+- Ein zweiter, unabhängiger `financial-analyst`: Zweitberechnung der Kernkennzahlen aus den Rohdaten (Schritt 6, Vier-Augen-Prinzip). Er erhält nur Rohdaten und Formeln, nicht das erste Ergebnis.
+- Agent `red-team-auditor`: bei Investitionsentscheidungen oberhalb der Wesentlichkeitsgrenze (über `/red-team`).
 
 ## 6. Qualitätskontrolle
 - [ ] Quellensummen stimmen mit berechneten Summen überein.

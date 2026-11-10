@@ -34,8 +34,9 @@ Ziel ist nicht Ablehnung, sondern eine robustere Fassung.
 7. **Urteil:** Fortfahren / mit Auflagen / stoppen.
 
 ## 5. Spezialagenten
-- `general-purpose` — 2–3 unabhängige Gegner-Agenten parallel mit unterschiedlicher Rolle (z. B. Angreifer, skeptischer Investor). Sie erhalten nur den Prüfgegenstand, nicht die eigene Einschätzung.
-- `Explore` — bei Code: Angriffsfläche (Routes, Actions, Policies) kartieren.
+- Agent `red-team-auditor`: führt die Prüfung durch. Bei hohem Einsatz startet Wayne Core 2–3 Instanzen parallel mit unterschiedlicher Gegner-Rolle (z. B. Angreifer, skeptischer Investor, Regulierer). Sie erhalten nur den Prüfgegenstand, nicht die Einschätzung des Erstellers.
+- Fachliche Vertiefung: `legal-analyst` (Recht) oder `financial-analyst` (Sensitivitäten), wenn der Fokus es verlangt.
+- Eingebauter Agent `Explore`: bei Code die Angriffsfläche kartieren (Routen, Actions, Policies).
 
 ## 6. Qualitätskontrolle
 - [ ] Jeder Befund ist konkret und belegbar (Zitat, Datei:Zeile oder Zahl), nicht generisch.

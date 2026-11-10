@@ -28,8 +28,8 @@ Nur reale Daten — keine geschätzten Fortschritte.
 6. **Ablegen:** Zusammenfassung, Erfolge, Hindernisse und Fokus in den Wochenbericht übertragen (auf Wunsch).
 
 ## 5. Spezialagenten
-- `Explore` — Repository-Aktivität der Woche zusammenfassen, falls mehrere Repos betroffen sind.
-- Keine weiteren Agenten nötig; der Review soll schnell bleiben.
+- **Wayne Core führt diesen Skill direkt aus.** Ein Spezialagent ist nicht nötig, der Review soll schnell bleiben.
+- Optional: eingebauter Agent `Explore`, wenn die Repository-Aktivität mehrerer Repositories zusammenzufassen ist.
 
 ## 6. Qualitätskontrolle
 - [ ] Alle Zahlen stammen aus einer genannten Quelle.

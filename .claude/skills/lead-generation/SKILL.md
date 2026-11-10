@@ -27,8 +27,9 @@ Wenige, gut passende Kontakte mit belegtem Grund statt langer, kalter Listen.
 7. **Übergabe:** Liste als CSV/Tabelle; auf Wunsch Folgeaufgaben im Command Center anlegen.
 
 ## 5. Spezialagenten
-- `general-purpose` — parallele Firmenrecherche in Paketen à 5 Leads, Auftrag: „nur belegte Fakten mit URL“.
-- Skill `/deep-research` für Markt- oder Branchenüberblick vorab.
+- Agent `growth-analyst`: Zielkundenprofil, Recherche, Scoring und Ansprachetexte. Bei großen Listen startet Wayne Core mehrere Instanzen parallel, je ein Paket von 5–10 Leads.
+- Agent `legal-analyst`: verbindliche Prüfung der Ansprache (§ 7 UWG, DSGVO) vor dem ersten Versand.
+- Agent `research-analyst`: Markt- oder Branchenüberblick vorab, bei Bedarf.
 
 ## 6. Qualitätskontrolle
 - [ ] Jeder Lead erfüllt alle Muss-Kriterien; Signal hat Quelle.
