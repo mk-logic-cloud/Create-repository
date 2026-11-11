@@ -112,6 +112,17 @@ SQL-Prüfabfragen für RLS, Policies, anon-Rechte und Funktionsrechte. **Keine �
 | R8 | Redirects aus `proxy.ts` übernehmen beim Session-Refresh keine neuen Cookies (bestand schon vorher) | niedrig | gelegentlich erneuter Token-Refresh | Supabase-Grace-Period; bei Bedarf Cookies auf Redirects kopieren |
 | R9 | Branch-Schutz nicht aktiv | mittel | Direkt-Push auf `main` möglich | Ruleset gemäß Anleitung |
 
+## 5a. Nachtrag: Deployment-Kontrolle (Vercel-Audit)
+
+Details: [`DEPLOYMENT_ISOLATION.md`](DEPLOYMENT_ISOLATION.md).
+
+- **Befund:** Das Projekt `create-repository` deployt jeden Branch-Push. Root Directory ist leer, die Previews sind SSO-geschützt.
+- **Vorbereitet (lokal):**
+  - Wurzel-`vercel.json` mit `git.deploymentEnabled: false` in beiden Branches, inhaltsgleich und damit konfliktfrei.
+  - CI aufgeteilt: Check `protocol` in PR #2, Check `app` mit eigenem Workflow in PR #3. Damit ist jeder PR unabhängig prüfbar.
+- **Neue Reihenfolge:** Push (keine Deployments mehr), Checks grün, App-Projekt in Vercel anlegen,
+  Branch-Schutz aktivieren, Merge PR #2, PR #3 aktualisieren und mergen, staged Build per Promote live schalten.
+
 ## 6. Merge-Empfehlung
 
 1. **PR #2: Merge empfohlen**, als **erster** PR.

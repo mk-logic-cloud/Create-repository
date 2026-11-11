@@ -5,20 +5,25 @@ Repository-Inhaber selbst.
 
 ## Voraussetzung: eine echte Prüfung
 
-Eine Regel „mindestens eine erfolgreiche Prüfung“ wirkt nur, wenn es eine Prüfung gibt. Dafür liefert
-PR #2 den Workflow `.github/workflows/wayne-ci.yml` mit zwei Jobs:
+Eine Regel „mindestens eine erfolgreiche Prüfung“ wirkt nur, wenn es eine Prüfung gibt. Jedes Projekt
+bringt seinen eigenen Workflow im eigenen PR mit. Dadurch ist jeder PR **unabhängig vom anderen** prüfbar:
 
-| Job (Check-Name) | Prüft | Läuft |
-|---|---|---|
-| `protocol` | `scripts/validate_protocol.py`: Frontmatter, Pflichtabschnitte, Werkzeugrechte (nur `software-engineer` darf schreiben, kein Agent startet Agenten), Querverweise, Links | bei jedem PR und Push auf `main`; ohne `.claude/agents` wird er erfolgreich übersprungen |
-| `app` | `npm ci`, Typecheck, Lint, Unit-Tests, Migrationen und RLS-Tests (lokales PostgreSQL), Build | bei jedem PR und Push auf `main`; ohne `wayne-command-center/` wird er erfolgreich übersprungen |
+| Workflow (PR) | Check-Name | Prüft | Läuft |
+|---|---|---|---|
+| `.github/workflows/wayne-ci.yml` (PR #2) | `protocol` | `scripts/validate_protocol.py`: Frontmatter, Pflichtabschnitte, Werkzeugrechte (nur `software-engineer` darf schreiben, kein Agent startet Agenten), Querverweise, Links | bei jedem PR und Push auf `main`; ohne `.claude/agents` wird er erfolgreich übersprungen |
+| `.github/workflows/app-ci.yml` (PR #3) | `app` | `npm ci`, Typecheck, Lint, Unit-Tests, Migrationen und RLS-Tests (lokales PostgreSQL), Build | bei jedem PR und Push auf `main`; ohne `wayne-command-center/` wird er erfolgreich übersprungen |
 
-Beide Jobs laufen bei **jedem** PR. Dadurch blockiert ein verpflichtender Check keinen PR, der das
-jeweilige Projekt gar nicht berührt.
+Bei `pull_request` verwendet GitHub die Workflow-Dateien aus dem PR-Branch selbst. Der Check `app` läuft
+deshalb auf PR #3, **bevor** PR #2 gemergt ist. Beide Checks laufen bei jedem PR, auch wenn er das
+jeweilige Projekt nicht berührt. So blockiert ein verpflichtender Check keinen fremden PR.
+
+**Reihenfolge beim Aktivieren:** Einen Check erst dann als „required“ eintragen, wenn sein Workflow auf
+`main` liegt. Also `protocol` nach dem Merge von PR #2 und `app` nach dem Merge von PR #3. Ein
+verpflichtender Check, den es noch nicht gibt, blockiert sonst jeden PR.
 
 Der Validator wurde lokal mit absichtlich eingebauten Fehlern geprüft (Schreibrecht für einen
 Nur-lese-Agenten, falscher Agentenname, fehlender Abschnitt, falscher Skill-Verweis). Alle vier
-Fehler wurden erkannt. Der Workflow selbst läuft erst auf GitHub, nachdem PR #2 aktualisiert wurde.
+Fehler wurden erkannt. Der Check `protocol` lief auf GitHub zweimal grün (Stand vor der Aufteilung).
 
 ## Empfohlene Einstellungen (Ruleset)
 
@@ -37,7 +42,7 @@ Weg: GitHub → Repository → **Settings → Rules → Rulesets → New ruleset
 | ↳ Dismiss stale approvals when new commits are pushed | ✅ |
 | ↳ Require conversation resolution before merging | ✅ |
 | **Require status checks to pass** | ✅ an |
-| ↳ Status checks | `protocol` und `app` hinzufügen (erscheinen nach dem ersten Workflow-Lauf in der Auswahl) |
+| ↳ Status checks | `protocol` (nach Merge von PR #2) und `app` (nach Merge von PR #3) hinzufügen; sie erscheinen nach dem ersten Lauf in der Auswahl |
 | ↳ Require branches to be up to date before merging | ✅ |
 | Require linear history | optional (empfohlen: an, Merge per „Squash“ oder „Rebase“) |
 | Require signed commits | optional |

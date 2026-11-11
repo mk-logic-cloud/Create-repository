@@ -52,3 +52,5 @@ Branches von PR #2 und PR #3. Das Projekt hat kein Root Directory und baut desha
 Repository-Wurzel (`index.html`). Die Previews entstanden als Nebenwirkung von Pushes, nicht durch
 einen bewussten Deploy-Befehl. Seit dieser Feststellung werden Pushes zurückgehalten, bis der Inhaber
 sie freigibt. **Ein Merge auf `main` löst ein Production-Deployment dieses Projekts aus.**
+Vorbereitete Gegenmaßnahme (lokal): Wurzel-`vercel.json` mit `git.deploymentEnabled: false`, technisch erzwungen
+durch Vercel pro Commit. Details: [`DEPLOYMENT_ISOLATION.md`](DEPLOYMENT_ISOLATION.md).

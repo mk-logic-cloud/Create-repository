@@ -113,6 +113,8 @@ Weitere Dokumente in `docs/wayne-protocol/`:
 - [`SECURITY_REVIEW.md`](docs/wayne-protocol/SECURITY_REVIEW.md): technisch erzwungene Kontrollen gegenüber reinen Prompt-Regeln
 - [`RESEARCH_ENVIRONMENT.md`](docs/wayne-protocol/RESEARCH_ENVIRONMENT.md): vorgeschlagene Cloud-Umgebung `wayne-research`
 - [`RELEASE_REPORT.md`](docs/wayne-protocol/RELEASE_REPORT.md): Release-Bewertung und offene Risiken
+- [`BRANCH_PROTECTION.md`](docs/wayne-protocol/BRANCH_PROTECTION.md): Ruleset für `main` und CI-Checks
+- [`DEPLOYMENT_ISOLATION.md`](docs/wayne-protocol/DEPLOYMENT_ISOLATION.md): Vercel-Audit und Trennung der Deployments
 
 ## Live-Test (11.11.2026)
 
