@@ -8,6 +8,7 @@ Entscheidungsprotokoll, Agenten, Fortschrittskontrolle, Wochenberichte, Einstell
 - Spezifikation: [`docs/SPEC.md`](docs/SPEC.md)
 - Entwicklungsplan: [`docs/DEVELOPMENT_PLAN.md`](docs/DEVELOPMENT_PLAN.md)
 - **Einrichtung & offene manuelle Schritte:** [`docs/MANUAL_STEPS.md`](docs/MANUAL_STEPS.md)
+- **Deployment-Readiness & Security-Review:** [`docs/DEPLOYMENT_READINESS.md`](docs/DEPLOYMENT_READINESS.md)
 
 ```bash
 cp .env.example .env.local   # Supabase-URL + Publishable Key eintragen
