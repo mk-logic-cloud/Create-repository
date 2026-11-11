@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { supabaseCookieOptions } from "./cookie-options";
 
 /**
  * Forwards the request with extra headers (e.g. CSP nonce). The request headers are copied
@@ -20,6 +21,7 @@ export async function updateSession(
   let response = nextWithHeaders(request, extraRequestHeaders);
 
   const supabase = createServerClient(env.url, env.key, {
+    cookieOptions: supabaseCookieOptions(),
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll(cookiesToSet) {

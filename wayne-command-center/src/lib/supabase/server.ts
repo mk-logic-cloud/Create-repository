@@ -3,6 +3,7 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import { getSupabaseEnv } from "@/lib/env";
+import { supabaseCookieOptions } from "./cookie-options";
 
 /** Per-request Supabase client bound to the user's session cookies. */
 export const createClient = cache(async () => {
@@ -12,6 +13,7 @@ export const createClient = cache(async () => {
   if (!env) throw new Error("Supabase ist nicht konfiguriert.");
 
   return createServerClient(env.url, env.key, {
+    cookieOptions: supabaseCookieOptions(),
     cookies: {
       getAll: () => cookieStore.getAll(),
       setAll(cookiesToSet) {

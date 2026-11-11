@@ -27,6 +27,7 @@ Supabase-Projekt steht noch aus.
 | Authentifizierung | E-Mail und Passwort mit Bestätigung. `proxy.ts` prüft per `getClaims`, die Datenzugriffsschicht per `getUser` (vom Auth-Server validiert) | Code |
 | Row Level Security | Auf allen 9 Tabellen. Zugriff nur auf eigene Zeilen (`owner_id = auth.uid()`); anon hat keinen Zugriff. Composite-FKs verhindern Verweise auf fremde Datensätze | **Datenbank (technisch erzwungen)** |
 | Datenbankzugriffe | Nur serverseitig (Server Components und Actions), nur mit Publishable Key. IDs werden per Zod als UUID validiert, `owner_id` setzt die Datenbank | Code |
+| Session-Cookies | `HttpOnly`, `Secure` (Produktion), `SameSite=Lax`, `Path=/`, zentral in `src/lib/supabase/cookie-options.ts`; Löschung beim Logout mit `Max-Age=0` und denselben Attributen. Getestet per Unit-Test mit der echten `@supabase/ssr`-Bibliothek und im Browser (`document.cookie` enthält keinen Token) | Code |
 | Kein Secret im Frontend | Server-Module mit `server-only`; Service- und Secret-Keys werden abgelehnt | Code + Canary-Test |
 | Registrierung abschalten | Nach Anlage des Administrator-Kontos in Supabase | **manuell**, `MANUAL_STEPS.md` 1.7 |
 | Secure password change | Supabase-Einstellung (Befund A2) | **manuell**, `MANUAL_STEPS.md` 1.5 |
