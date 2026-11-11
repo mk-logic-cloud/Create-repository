@@ -101,6 +101,19 @@ Im Bereich *Agenten* der App (`wayne-command-center/`) lässt sich jeder Agent m
 Skill-Befehl registrieren, z. B. „Research-Analyst“ mit `/deep-research`. Das Register dient der
 Übersicht. Ausgeführt werden die Agenten in Claude Code.
 
+## Repository und Pull Requests
+
+| Teil | Inhalt | Pull Request |
+|---|---|---|
+| Wayne Protocol 2.0 | `CLAUDE.md`, `WAYNE_PROTOCOL.md`, `.claude/agents/`, `.claude/skills/`, `docs/wayne-protocol/` | PR #2 |
+| Wayne Command Center | `wayne-command-center/` | eigener PR, unabhängig reviewbar |
+
+Weitere Dokumente in `docs/wayne-protocol/`:
+- [`AGENT_VALIDATION.md`](docs/wayne-protocol/AGENT_VALIDATION.md): Tests aller sieben Agenten
+- [`SECURITY_REVIEW.md`](docs/wayne-protocol/SECURITY_REVIEW.md): technisch erzwungene Kontrollen gegenüber reinen Prompt-Regeln
+- [`RESEARCH_ENVIRONMENT.md`](docs/wayne-protocol/RESEARCH_ENVIRONMENT.md): vorgeschlagene Cloud-Umgebung `wayne-research`
+- [`RELEASE_REPORT.md`](docs/wayne-protocol/RELEASE_REPORT.md): Release-Bewertung und offene Risiken
+
 ## Live-Test (11.11.2026)
 
 Nach einem Neustart der Sitzung hat Claude Code alle sieben Agenten als Agententypen registriert.
