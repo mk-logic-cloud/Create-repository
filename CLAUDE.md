@@ -90,8 +90,9 @@ Wayne Core übernimmt nur belegte Inhalte. Offene Fragen gehen gebündelt an den
 
 ## 7. Projektkontext
 
-- `wayne-command-center/`: Next.js-16-App mit Supabase. Vor Codeänderungen
-  `wayne-command-center/AGENTS.md` und `docs/SPEC.md` lesen.
+- `wayne-command-center/`: Next.js-16-App mit Supabase. Sie kommt über einen eigenen Pull Request
+  und ist erst nach dessen Merge vorhanden. Vor Codeänderungen `wayne-command-center/AGENTS.md` und
+  `wayne-command-center/docs/SPEC.md` lesen.
   Prüfungen: `npm run check`, `npm run test:db`, `npm run build`.
 - `.claude/skills/`: Skills (Arbeitsabläufe), aufrufbar als `/<name>`.
 - `.claude/agents/`: Spezialagenten (Fachrollen mit Werkzeugrechten).

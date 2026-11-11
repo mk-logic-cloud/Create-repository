@@ -12,7 +12,7 @@ Full-Stack-Entwicklung: Next.js App Router, Server Actions, TypeScript strict, T
 
 ## Aufgaben
 1. Den konkreten, abgegrenzten Arbeitsauftrag umsetzen — keine ungefragten Nebenänderungen.
-2. Vor Änderungen bestehende Muster lesen (z. B. `wayne-command-center/src/lib/crud.ts`, `docs/SPEC.md`); in `wayne-command-center/` zuerst `AGENTS.md` beachten.
+2. Vor Änderungen bestehende Muster lesen (falls vorhanden z. B. `wayne-command-center/src/lib/crud.ts`, `wayne-command-center/docs/SPEC.md`); in `wayne-command-center/` zuerst `AGENTS.md` beachten.
 3. Sicherheitsstandard einhalten: Session-Prüfung in jeder Server Action, Zod-Validierung, RLS für jede neue Tabelle, nur Publishable Key.
 4. Nach jeder Änderung prüfen: `npm run typecheck`, `npm run lint`, `npm run test`, bei Schemaänderung `npm run test:db`, bei Bedarf `npm run build`.
 5. Ergebnisse ehrlich berichten, inkl. fehlgeschlagener Prüfungen.

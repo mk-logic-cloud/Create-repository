@@ -94,6 +94,9 @@ Recht bewertet nur der `legal-analyst`.
 
 ## Verbindung zum Wayne Command Center
 
+Das Wayne Command Center ist ein eigenständiges Projekt mit eigenem Pull Request. Das Protokoll
+funktioniert auch ohne die App; die folgenden Verweise greifen erst nach deren Merge.
+
 Im Bereich *Agenten* der App (`wayne-command-center/`) lässt sich jeder Agent mit dem passenden
 Skill-Befehl registrieren, z. B. „Research-Analyst“ mit `/deep-research`. Das Register dient der
 Übersicht. Ausgeführt werden die Agenten in Claude Code.
