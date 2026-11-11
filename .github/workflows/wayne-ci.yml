@@ -1,0 +1,64 @@
+name: wayne-ci
+
+# Required status check for branch protection on main (see docs/wayne-protocol/BRANCH_PROTECTION.md).
+# Runs on every pull request and push to main. Each job skips its work when its project is absent,
+# so the check never blocks a PR that does not touch that project.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wayne-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  protocol:
+    name: protocol
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Wayne Protocol
+        run: |
+          if [ ! -d .claude/agents ]; then echo "No Wayne Protocol in this revision - skipping."; exit 0; fi
+          python3 -m pip install --quiet "pyyaml==6.0.2"
+          python3 scripts/validate_protocol.py
+
+  app:
+    name: app
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - id: detect
+        run: |
+          if [ -f wayne-command-center/package.json ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; echo "No Wayne Command Center in this revision - skipping."; fi
+      - if: steps.detect.outputs.present == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: wayne-command-center/package-lock.json
+      - if: steps.detect.outputs.present == 'true'
+        working-directory: wayne-command-center
+        run: npm ci
+      - if: steps.detect.outputs.present == 'true'
+        name: Typecheck, lint, unit tests
+        working-directory: wayne-command-center
+        run: npm run check
+      - if: steps.detect.outputs.present == 'true'
+        name: Migrations and RLS tests (local PostgreSQL)
+        working-directory: wayne-command-center
+        run: npm run test:db
+      - if: steps.detect.outputs.present == 'true'
+        name: Production build
+        working-directory: wayne-command-center
+        run: npm run build
