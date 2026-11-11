@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
+import { safeTimeZone } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
 import type { Profile } from "@/lib/types";
 
@@ -23,7 +24,9 @@ export const getProfile = cache(async (): Promise<Profile | null> => {
   const user = await requireUser();
   const supabase = await createClient();
   const { data } = await supabase.from("profiles").select("id, full_name, timezone").eq("id", user.id).maybeSingle();
-  return (data as Profile | null) ?? null;
+  const profile = (data as Profile | null) ?? null;
+  // Defence in depth: a stored zone the runtime does not know falls back to the default instead of crashing pages.
+  return profile ? { ...profile, timezone: safeTimeZone(profile.timezone) } : null;
 });
 
 /** Authenticated Supabase client for data access. */

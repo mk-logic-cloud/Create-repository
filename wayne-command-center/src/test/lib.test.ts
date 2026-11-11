@@ -1,11 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { addDays, isoWeek, isMonday, startOfIsoWeek, todayInZone, weekRange, zonedMidnightUtc } from "@/lib/dates";
+import { addDays, isoWeek, isMonday, safeTimeZone, startOfIsoWeek, todayInZone, weekRange, zonedMidnightUtc } from "@/lib/dates";
 import { isPrivilegedKey } from "@/lib/env";
 import { completionRate, projectHealth } from "@/lib/progress";
 import { safeNextPath } from "@/lib/safe-redirect";
 import { likePattern } from "@/lib/search";
 
 describe("dates", () => {
+  it("falls back to Europe/Berlin for unknown or empty time zones", () => {
+    expect(safeTimeZone("America/New_York")).toBe("America/New_York");
+    expect(safeTimeZone("Mars/Olympus")).toBe("Europe/Berlin");
+    expect(safeTimeZone("")).toBe("Europe/Berlin");
+    expect(safeTimeZone(null)).toBe("Europe/Berlin");
+    expect(() => todayInZone(safeTimeZone("Mars/Olympus"))).not.toThrow();
+  });
   it("finds the ISO week start", () => {
     expect(startOfIsoWeek("2026-11-10")).toBe("2026-11-09"); // Tuesday → Monday
     expect(startOfIsoWeek("2026-11-15")).toBe("2026-11-09"); // Sunday → Monday

@@ -1,5 +1,18 @@
 /** Date helpers that respect the user's IANA time zone. Dates are ISO strings (YYYY-MM-DD). */
 
+export const DEFAULT_TIME_ZONE = "Europe/Berlin";
+
+/** Returns `timeZone` if the runtime knows it, otherwise the default — invalid zones must never crash a page. */
+export function safeTimeZone(timeZone: string | null | undefined): string {
+  if (!timeZone) return DEFAULT_TIME_ZONE;
+  try {
+    new Intl.DateTimeFormat("en-CA", { timeZone });
+    return timeZone;
+  } catch {
+    return DEFAULT_TIME_ZONE;
+  }
+}
+
 export function todayInZone(timeZone: string, now = new Date()): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).format(now);
 }
