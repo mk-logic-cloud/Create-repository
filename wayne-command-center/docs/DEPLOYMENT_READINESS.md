@@ -10,7 +10,7 @@ Supabase-Projekt steht noch aus.
 | Prüfung | Ergebnis | Nachweis |
 |---|---|---|
 | TypeScript strict, ESLint | ✅ fehlerfrei | `npm run check`; in CI als Check `app` (`.github/workflows/app-ci.yml`) |
-| Unit-Tests | ✅ 55/55 | Validierung, Datum/Zeitzone, Ampellogik, Redirect-Schutz, Key-Prüfung, `SITE_URL`, `echoValues`, CSP inkl. Hash-Wächter für sonner |
+| Unit-Tests | ✅ 79/79 | Validierung, Datum/Zeitzone, Ampellogik, Redirect-Schutz, Key-Prüfung, `SITE_URL`, `echoValues`, CSP inkl. Hash-Wächter für sonner |
 | Migrationen + RLS-Tests (PostgreSQL 16) | ✅ bestanden | `npm run test:db`; Gegenprobe ohne Härtungsmigration schlägt erwartungsgemäß fehl |
 | Produktions-Build | ✅ | `npm run build` |
 | Browser-Smoke-Test (Playwright, lokaler Supabase-Mock) mit CSP | ✅ 34/34 | 11.11.2026: Setup-Umleitung, Login-Fehlerfälle, alle 10 Module, Dialog, Toast, Filter, Mobile-Navigation, Abmelden, **0 CSP-Verstöße im Browser**, alle 14 Script-Tags mit Request-Nonce, Nonce pro Request neu |
@@ -67,6 +67,11 @@ manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests
 | A5 (niedrig) | `completed_at` direkt setzbar | ✅ behoben: Trigger leitet den Wert bei jedem Schreiben aus dem Status ab |
 | A6 (niedrig) | keine Content-Security-Policy | ✅ behoben: Nonce-basierte CSP pro Request (siehe Abschnitt 2a), im Browser verifiziert |
 | A7 (Info) | FORCE RLS auf `profiles`, Testlücken | ✅ Testlücken geschlossen. FORCE bewusst nicht gesetzt: Der Sign-up-Trigger (SECURITY DEFINER) könnte sonst auf Supabase blockiert werden |
+| H-1 (hoch) | Redirects im Proxy verwerfen erneuerte bzw. gelöschte Session-Cookies | ✅ behoben: `redirectWithSession` (`src/lib/supabase/proxy.ts`) kopiert alle Cookies samt Attributen; Test `src/test/proxy-redirect-cookies.test.ts` |
+| M-1 (mittel) | `authenticated` hat TRUNCATE/REFERENCES/TRIGGER und darf `owner_id`/`created_at` schreiben | ✅ behoben (Migration `20261112000000`): Rechte neu vergeben, INSERT/UPDATE nur auf fachliche Spalten, Default-Privileges ohne TRUNCATE/REFERENCES/TRIGGER; DB-Tests |
+| M-2 (mittel) | keine DB-Grenzen für `metrics`, Tag-Länge, `milestones.completed_at` | ✅ behoben (Migration `20261112000000`): CHECKs (Objekt, ≤ 64 KB; Tags 1–40 Zeichen) und Trigger setzt `completed_at` serverseitig |
+| M-3 / W-2 (mittel) | Passwortwechsel ohne erneute Authentifizierung | ✅ behoben im Code: aktuelles Passwort Pflicht, außer die Anmeldung ist ≤ 10 Min. alt (`amr`-Zeitstempel); danach Abmeldung aller anderen Sitzungen. Die Supabase-Einstellung „Secure password change“ (A2) bleibt empfohlen |
+| W-1 (niedrig) | Proxy-Matcher lässt Pfade mit Dateiendungen ohne Auth-Check und CSP durch | ✅ behoben: Matcher schließt nur `_next/static`, `_next/image`, `favicon.ico` aus; Root-Layout nutzt den Nonce nur, wenn die Request-CSP ihn enthält |
 
 ## 4. Vercel
 
@@ -106,14 +111,14 @@ Die App selbst kennt keine SMTP-Zugangsdaten. Im Repository sind keine Zugangsda
 3. **Kein Rate-Limit für Server Actions.** Für ein Einzelnutzer-System vertretbar. Die
    Anmeldelimits setzt Supabase.
 4. `SECRET_FIELDS` (Felder, die nach fehlgeschlagenen Formularen nie zurückgegeben werden) ist eine
-   feste Liste (`password`, `confirm`). Neue Passwortfelder müssen dort ergänzt werden.
+   feste Liste (`password`, `confirm`, `current_password`). Neue Passwortfelder müssen dort ergänzt werden.
 5. Der Browser-Smoke-Test lief gegen einen lokalen Supabase-Mock. Ein Lauf auf einem
    Staging-Projekt mit echtem Supabase steht aus.
 
 ## 7. Go-Live-Checkliste (durch den Inhaber)
 
 - [ ] [`SUPABASE_PRODUCTION_CHECKLIST.md`](SUPABASE_PRODUCTION_CHECKLIST.md) vollständig abgehakt
-- [ ] Supabase-Projekt angelegt, beide Migrationen ausgeführt, Security Advisor ohne Befund
+- [ ] Supabase-Projekt angelegt, alle drei Migrationen ausgeführt, Security Advisor ohne Befund
 - [ ] Redirect-URLs exakt, „Confirm email“ an, „Secure password change“ an
 - [ ] SMTP eingerichtet und getestet
 - [ ] Vercel: Root Directory, drei Umgebungsvariablen, Deploy erfolgreich

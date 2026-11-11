@@ -58,3 +58,17 @@ export function generateNonce(): string {
   for (const b of bytes) binary += String.fromCharCode(b);
   return btoa(binary);
 }
+
+/**
+ * Nonce for rendering, read from the request headers. The protection comes from the proxy: on every
+ * path it handles (all pages; see the matcher in src/proxy.ts) it overwrites both `x-nonce` and the
+ * request's Content-Security-Policy header. This helper is only a consistency check — it rejects a
+ * malformed nonce or one that is not part of the CSP header. It cannot tell a proxy-set pair from a
+ * client-sent pair, so it is not a security boundary on paths the proxy skips.
+ */
+export function trustedNonce(headers: Pick<Headers, "get">): string | undefined {
+  const nonce = headers.get("x-nonce");
+  const csp = headers.get("content-security-policy");
+  if (!nonce || !csp || !/^[A-Za-z0-9+/]+={0,2}$/.test(nonce)) return undefined;
+  return csp.includes(`'nonce-${nonce}'`) ? nonce : undefined;
+}

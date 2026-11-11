@@ -7,6 +7,7 @@ Ausführliche Erklärungen stehen in [`MANUAL_STEPS.md`](MANUAL_STEPS.md).
 - [ ] Projekt in Region EU (Frankfurt), DB-Passwort im Passwortmanager
 - [ ] SQL Editor: `supabase/migrations/20261110000000_init.sql` ausgeführt
 - [ ] SQL Editor: `supabase/migrations/20261111000000_security_hardening.sql` ausgeführt (nach der ersten)
+- [ ] SQL Editor: `supabase/migrations/20261112000000_privileges_and_limits.sql` ausgeführt (als dritte, nach den beiden anderen)
 
 ## B. RLS prüfen (SQL Editor, nur lesend)
 

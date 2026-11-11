@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getSupabaseEnv } from "@/lib/env";
 import { buildContentSecurityPolicy, generateNonce } from "@/lib/csp";
-import { nextWithHeaders, updateSession } from "@/lib/supabase/proxy";
+import { nextWithHeaders, redirectWithSession, updateSession } from "@/lib/supabase/proxy";
 
 const PUBLIC_PATHS = ["/login", "/signup", "/forgot-password", "/auth/confirm"];
 const GUEST_ONLY = ["/login", "/signup", "/forgot-password"];
@@ -44,14 +44,17 @@ export async function proxy(request: NextRequest) {
   if (!isAuthenticated && !matches(pathname, PUBLIC_PATHS)) {
     const url = new URL("/login", request.url);
     if (pathname !== "/") url.searchParams.set("next", `${pathname}${search}`);
-    return withCsp(NextResponse.redirect(url));
+    return withCsp(redirectWithSession(url, response));
   }
   if (isAuthenticated && matches(pathname, GUEST_ONLY)) {
-    return withCsp(NextResponse.redirect(new URL("/", request.url)));
+    return withCsp(redirectWithSession(new URL("/", request.url), response));
   }
   return withCsp(response);
 }
 
+// Only Next.js build assets and the favicon skip the proxy. Paths with file extensions are *not*
+// excluded: public/ is empty, so every such path is a route that needs the auth check and the CSP.
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt)$).*)"],
+  // Anchored so that look-alikes such as /favicon.icoX or /_next/staticfoo still pass the proxy.
+  matcher: ["/((?!_next/static/|_next/image/|_next/image$|favicon\\.ico$).*)"],
 };

@@ -7,9 +7,10 @@ Bewertung und Prüfprotokoll: [`DEPLOYMENT_READINESS.md`](DEPLOYMENT_READINESS.m
 ## 1. Supabase-Projekt
 
 1. Auf supabase.com ein Projekt anlegen (Region **EU / Frankfurt** empfohlen) und ein starkes DB-Passwort im Passwortmanager sichern.
-2. Im **SQL Editor** beide Migrationen **in dieser Reihenfolge** ausführen:
+2. Im **SQL Editor** alle drei Migrationen **in dieser Reihenfolge** ausführen:
    1. `supabase/migrations/20261110000000_init.sql`
    2. `supabase/migrations/20261111000000_security_hardening.sql`
+   3. `supabase/migrations/20261112000000_privileges_and_limits.sql`
 
    Alternativ per CLI: `supabase link --project-ref <ref>` und danach `supabase db push`.
 3. **Authentication → Providers → Email:** Email aktiviert lassen, „Confirm email“ **an**.
@@ -95,7 +96,7 @@ npm run test:db
 npm run build
 ```
 
-`npm run check` umfasst Typecheck, Lint und Unit-Tests. `npm run test:db` spielt beide Migrationen in ein lokales PostgreSQL (ab Version 15) ein und führt die RLS-Tests aus.
+`npm run check` umfasst Typecheck, Lint und Unit-Tests. `npm run test:db` spielt alle Migrationen in ein lokales PostgreSQL (ab Version 15) ein und führt die RLS-Tests aus.
 
 ## 6. Optional
 

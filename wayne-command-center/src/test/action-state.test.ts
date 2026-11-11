@@ -14,10 +14,13 @@ describe("echoValues", () => {
     fd.set("email", "a@example.com");
     fd.set("password", "hunter2-secret");
     fd.set("confirm", "hunter2-secret");
+    fd.set("current_password", "old-hunter1-secret");
     const out = echoValues(fd);
     expect(out).toEqual({ email: "a@example.com" });
     expect(out).not.toHaveProperty("password");
     expect(out).not.toHaveProperty("confirm");
+    expect(out).not.toHaveProperty("current_password");
+    expect(JSON.stringify(out)).not.toContain("old-hunter1-secret");
     expect(JSON.stringify(out)).not.toContain("hunter2-secret");
   });
 

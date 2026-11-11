@@ -19,7 +19,7 @@ export const fail = (message: string, fieldErrors?: ActionState["fieldErrors"], 
   at: Date.now(),
 });
 
-const SECRET_FIELDS = new Set(["password", "confirm"]);
+const SECRET_FIELDS = new Set(["password", "confirm", "current_password"]);
 
 /** String form values without secrets, for restoring a form after a failed submit. */
 export function echoValues(formData: FormData): Record<string, string> {

@@ -12,6 +12,18 @@ export function nextWithHeaders(request: NextRequest, extraHeaders: Record<strin
   return NextResponse.next({ request: { headers } });
 }
 
+/**
+ * Redirect that keeps every cookie written by `updateSession` — refreshed tokens *and* deletions
+ * (empty value, Max-Age 0) — including their attributes (httpOnly, secure, sameSite, path, maxAge).
+ * A bare `NextResponse.redirect` would drop them: the browser keeps a consumed refresh token or a
+ * stale session cookie and the next request fails or loops.
+ */
+export function redirectWithSession(url: URL | string, sessionResponse: NextResponse) {
+  const redirect = NextResponse.redirect(url);
+  for (const cookie of sessionResponse.cookies.getAll()) redirect.cookies.set(cookie);
+  return redirect;
+}
+
 /** Refreshes the auth session and returns the response plus whether a valid user is present. */
 export async function updateSession(
   request: NextRequest,

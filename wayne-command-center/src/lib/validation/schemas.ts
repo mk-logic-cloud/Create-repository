@@ -129,5 +129,13 @@ export const signupSchema = z.object({
 export const forgotPasswordSchema = z.object({ email });
 
 export const passwordChangeSchema = z
-  .object({ password: newPassword, confirm: z.string() })
+  .object({
+    // Required by the server action unless the session authenticated within the last 10 minutes.
+    current_password: z.preprocess(
+      (v) => (typeof v === "string" && v !== "" ? v : undefined),
+      z.string().max(72, "Maximal 72 Zeichen.").optional(),
+    ),
+    password: newPassword,
+    confirm: z.string(),
+  })
   .refine((v) => v.password === v.confirm, { path: ["confirm"], message: "Passwörter stimmen nicht überein." });

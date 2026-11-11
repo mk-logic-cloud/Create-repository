@@ -3,6 +3,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { headers } from "next/headers";
 import { connection } from "next/server";
+import { trustedNonce } from "@/lib/csp";
 import { StyleNonce } from "@/components/layout/style-nonce";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -24,7 +25,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   // CSP nonces are per request: render every route dynamically, including otherwise static ones.
   await connection();
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
+  const nonce = trustedNonce(await headers());
   return (
     <html lang="de" className={`dark ${GeistSans.variable} ${GeistMono.variable}`}>
       <body className="font-sans">
