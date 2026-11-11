@@ -2,7 +2,7 @@
 
 Diese Schritte brauchen Ihre Zugangsdaten und werden deshalb **nicht** automatisch ausgeführt.
 Solange die Konfiguration unvollständig ist, leitet die App auf `/setup` um und nennt dort das Problem.
-Bewertung und Prüfprotokoll: [`DEPLOYMENT_READINESS.md`](DEPLOYMENT_READINESS.md).
+Bewertung und Prüfprotokoll: [`DEPLOYMENT_READINESS.md`](DEPLOYMENT_READINESS.md). Kompakte Abhakliste: [`SUPABASE_PRODUCTION_CHECKLIST.md`](SUPABASE_PRODUCTION_CHECKLIST.md).
 
 ## 1. Supabase-Projekt
 
@@ -41,6 +41,8 @@ Der eingebaute Versand von Supabase ist nur für Tests gedacht: Er hat ein niedr
 ## 3. Vercel
 
 1. Repository in Vercel importieren. **Root Directory: `wayne-command-center`**. Framework: Next.js (wird erkannt).
+   Hinweis: Ein Vercel-Projekt `create-repository` ist bereits mit dem Repository verbunden, aber **ohne** Root Directory.
+   Entweder dort `wayne-command-center` eintragen oder ein eigenes Projekt anlegen (siehe `DEPLOYMENT_READINESS.md` Abschnitt 4).
 2. Build-Einstellungen: Standard lassen.
    - Install: `npm ci`
    - Build: `npm run build`
