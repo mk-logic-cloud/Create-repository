@@ -9,7 +9,7 @@ Supabase-Projekt steht noch aus.
 
 | Prüfung | Ergebnis | Nachweis |
 |---|---|---|
-| TypeScript strict, ESLint | ✅ fehlerfrei | `npm run check` |
+| TypeScript strict, ESLint | ✅ fehlerfrei | `npm run check`; in CI als Check `app` (`.github/workflows/app-ci.yml`) |
 | Unit-Tests | ✅ 55/55 | Validierung, Datum/Zeitzone, Ampellogik, Redirect-Schutz, Key-Prüfung, `SITE_URL`, `echoValues`, CSP inkl. Hash-Wächter für sonner |
 | Migrationen + RLS-Tests (PostgreSQL 16) | ✅ bestanden | `npm run test:db`; Gegenprobe ohne Härtungsmigration schlägt erwartungsgemäß fehl |
 | Produktions-Build | ✅ | `npm run build` |
@@ -77,6 +77,12 @@ manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests
 > Vor einem Merge entscheiden: Projekt auf Root Directory `wayne-command-center` umstellen (dann muss
 > `SITE_URL` usw. gesetzt sein, sonst zeigt Produktion `/setup`), ein separates Projekt anlegen oder
 > automatische Deployments vorübergehend deaktivieren (Project Settings → Git → „Ignored Build Step“).
+>
+> **Vorbereitet:** Die Repository-Wurzel erhält eine `vercel.json` mit `git.deploymentEnabled: false`. Damit
+> deployt das bestehende Projekt nicht mehr aus Git. Für die App wird ein **eigenes** Vercel-Projekt empfohlen:
+> Root Directory `wayne-command-center`, „Only build if there are changes“, „Auto-assign Custom Production
+> Domains“ aus (Production nur per Promote), getrennte Staging- und Produktionsvariablen. Details:
+> `docs/wayne-protocol/DEPLOYMENT_ISOLATION.md` im Wayne-Protocol-PR.
 
 
 - Root Directory: `wayne-command-center`. Framework Next.js 16, Build `npm run build`, Install `npm ci`.
