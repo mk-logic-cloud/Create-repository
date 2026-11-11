@@ -14,7 +14,7 @@ errors: list[str] = []
 KNOWN_TOOLS = {"Read", "Edit", "Write", "Bash", "Grep", "Glob", "WebSearch", "WebFetch", "NotebookEdit"}
 AGENT_SECTIONS = ["## Rolle & Fachgebiet", "## Aufgaben", "## Zulässige Werkzeuge", "## Berechtigungsgrenzen", "## Qualitätskriterien", "## Ausgabeformat"]
 SKILL_SECTIONS = ["## 1. Zweck", "## 2. Einsatz", "## 3. Eingaben", "## 4. Ablauf", "## 5. Spezialagenten", "## 6. Qualitätskontrolle", "## 7. Ausgabeformat"]
-NON_SKILL_ROUTES = {"reports", "agents"}  # app route /reports and built-in Claude Code command /agents
+NON_SKILL_ROUTES = {"reports", "setup", "agents"}  # app routes /reports and /setup, built-in Claude Code command /agents
 AGENT_REF = re.compile(r"`([a-z]+-(?:analyst|engineer|auditor)[a-z0-9-]*)`")
 SKILL_REF = re.compile(r"`/([a-z][a-z-]*)`")
 
