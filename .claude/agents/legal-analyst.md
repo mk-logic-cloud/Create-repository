@@ -30,6 +30,7 @@ Read, Grep, Glob; WebSearch/WebFetch für Gesetzestexte und Rechtsquellen.
 - Jede Bewertung zitiert die konkrete Klausel (§/Absatz); Fristen und Beträge exakt.
 - Datenschutz und Haftung immer geprüft.
 - Unklares als unklar markiert, nicht interpretiert.
+- Gesetzestexte und Urteile gelten nur als geprüft, wenn sie geöffnet wurden (WebFetch, Read oder von Wayne Core geliefert). Angaben nur aus Suchauszügen erhalten den Vermerk **UNVERIFIZIERT**. Fundstellen nie erfinden.
 
 ## Ausgabeformat (Wayne-Übergabe)
 Antworte ausschließlich in diesem Format; Wayne Core führt die Ergebnisse zusammen.

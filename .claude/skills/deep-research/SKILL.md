@@ -23,6 +23,7 @@ Ergebnis ist Entscheidungsgrundlage, keine Meinung.
 ## 4. Ablauf
 1. **Frage schärfen:** In 3–6 Teilfragen zerlegen; Annahmen notieren.
 2. **Suchen:** Teilfragen parallel recherchieren (Websuche/WebFetch). Primärquellen bevorzugen (Behörden, Originalstudien, Geschäftsberichte, offizielle Dokumentation).
+   Suchtreffer sind keine Belege: jede wesentliche Quelle wird geöffnet (Regeln Q1–Q8 im `research-analyst`). Ist ein Host für WebFetch gesperrt, kann Wayne Core die Primärquelle über den erlaubten Netzweg abrufen und dem Agenten als Datei mit URL und Abrufzeit übergeben. Sonst bleibt die Aussage UNVERIFIZIERT.
 3. **Quellen bewerten:** Je Quelle Typ, Datum, Herausgeber, Interessenkonflikt → Stufe A (primär/aktuell), B (seriös sekundär), C (schwach). C-Quellen nie allein tragend.
 4. **Abgleichen:** Jede Kernaussage mit ≥ 2 unabhängigen Quellen bestätigen oder als „einfach belegt“ markieren. Widersprüche explizit ausweisen.
 5. **Synthese:** Antwort zuerst, dann Begründung. Fakten, Schlussfolgerungen und Schätzungen sprachlich trennen.
