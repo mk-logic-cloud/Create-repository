@@ -1,0 +1,32 @@
+name: wayne-protocol-ci
+
+# Required status check "protocol" for branch protection on main
+# (see docs/wayne-protocol/BRANCH_PROTECTION.md). The Wayne Command Center has its own
+# workflow (.github/workflows/app-ci.yml, check "app"), shipped with its pull request.
+# Runs on every pull request and push to main; skips its work when the protocol is absent,
+# so a required check never blocks an unrelated pull request.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wayne-protocol-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  protocol:
+    name: protocol
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Wayne Protocol
+        run: |
+          if [ ! -d .claude/agents ]; then echo "No Wayne Protocol in this revision - skipping."; exit 0; fi
+          python3 -m pip install --quiet "pyyaml==6.0.2"
+          python3 scripts/validate_protocol.py
