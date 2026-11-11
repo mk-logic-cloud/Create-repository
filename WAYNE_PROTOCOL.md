@@ -98,6 +98,25 @@ Im Bereich *Agenten* der App (`wayne-command-center/`) lässt sich jeder Agent m
 Skill-Befehl registrieren, z. B. „Research-Analyst“ mit `/deep-research`. Das Register dient der
 Übersicht. Ausgeführt werden die Agenten in Claude Code.
 
+## Live-Test (11.11.2026)
+
+Nach einem Neustart der Sitzung hat Claude Code alle sieben Agenten als Agententypen registriert.
+Testauftrag über `/wayne`: „Kurze Marktanalyse für eine kleine deutsche Finanzberatungsagentur,
+die neue Kunden gewinnen möchte.“ Die Agentur war fiktiv; der Test nutzte keine Kundendaten und
+führte keine externen Aktionen aus.
+
+| Schritt | Ausführung | Ergebnis |
+|---|---|---|
+| 1. Analyse | Wayne Core | Strategieauftrag mit niedrigem Risiko. Ablauf festgelegt: Recherche, danach Bewertung (sequenziell). |
+| 2. Fakten | Agent `research-analyst` (WebSearch, WebFetch) | Status „teilweise“, Konfidenz mittel. Liefert Marktstruktur (DIHK-Register), Nachfrage, Wettbewerb und Regulierung. Die Quellen konnten wegen der Netzwerk-Allowlist nicht geöffnet werden; der Agent hat das offen gemeldet. |
+| 3. Eingangsprüfung | Wayne Core | Übergabeformat vollständig. Weitergabe mit dem Vermerk „nicht im Original geprüft“. |
+| 4. Bewertung | Agent `business-analyst` | Status „erledigt“. Drei Optionen gewichtet bewertet, Empfehlung B (Spezialisierung auf das Altersvorsorgedepot, Akquise nur mit Einwilligung), drei Initiativen mit KPI und Abbruchkriterium. |
+| 5. Prüfung und Zusammenführung | Wayne Core | Gewichtete Werte nachgerechnet (3,35 / 3,60 / 1,95). Keine Widersprüche, Rollengrenzen eingehalten. |
+
+**Ergebnis:** Auswahl, sequenzielle Übergabe, Eingangsprüfung und Konsolidierung funktionieren wie in
+`CLAUDE.md` festgelegt. **Offen:** Recherche mit tatsächlich geöffneten Quellen. Dafür müssen die
+benötigten Hosts in der Netzwerkkonfiguration der Umgebung freigegeben werden.
+
 ## Neue Skills und Agenten
 
 Claude Code lädt Skills und Agenten beim Sitzungsstart. Nach Änderungen an `.claude/` die Sitzung
