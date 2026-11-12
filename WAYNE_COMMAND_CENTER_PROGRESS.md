@@ -88,11 +88,11 @@ Vertrauliche Sicherheitsunterlagen (Pläne, Audits, Prüfnachweise) werden **aus
 
 ## 8. S-0 – Checkliste P1–P8 (nur offene Voraussetzungen)
 
-Status am 12.11.2026: **keine Rückmeldung des Eigentümers → alle offen.** Nachweise jeweils als Bildschirmfoto **ohne** Adressen, Schlüssel oder Passwörter. Aufwand = geschätzte Zeit des Eigentümers (Schätzung).
+Status am 12.11.2026: **P1 erfüllt; P2–P8 offen.** Nachweise jeweils als Bildschirmfoto **ohne** Adressen, Schlüssel oder Passwörter. Aufwand = geschätzte Zeit des Eigentümers (Schätzung).
 
 | # | Anforderung | Status | Nachweis | Entscheidung des Eigentümers | Aufwand |
 |---|---|---|---|---|---|
-| P1 | MFA aktiv auf Postfach, Supabase, GitHub, Vercel | **teilweise** (12.11.2026): Gmail = 2FA per SMS (Selbstauskunft); Supabase, GitHub, Vercel offen | Selbstauskunft; Bildschirmfoto optional | Empfehlung: zusätzlich Passkey oder Sicherheitsschlüssel für Gmail (SMS ist anfällig für SIM-Tausch) | 15–30 min |
+| P1 | MFA aktiv auf Postfach, Supabase, GitHub, Vercel | **erfüllt** (Selbstauskunft des Eigentümers, 12.11.2026): Gmail = SMS-2FA **und** Passkey; Supabase = Passwort + TOTP (Authenticator-App); GitHub = MFA aktiv; Vercel = MFA aktiv | Selbstauskunft; keine Bildschirmfotos im Repository | Empfehlung: bei GitHub und Vercel ebenfalls App oder Passkey statt SMS, falls SMS genutzt wird | erledigt |
 | P2 | Postfach ohne fremde Weiterleitungen, Filter, Delegationen, App-Passwörter, Wiederherstellungsadressen | offen | Bildschirmfoto | bei Fund: zuerst bereinigen | 10 min |
 | P3 | Nur bekannte Mitglieder in Supabase und Vercel; bei GitHub keine unbekannten Tokens, SSH-Schlüssel oder OAuth-Apps | offen | Bildschirmfotos | – | 10 min |
 | P4 | Weiteres Free-Projekt möglich (aktive Free-Projekte aller Owner/Admins der Ziel-Organisation) | offen | Zahl + Bildschirmfoto | sonst Pro-Projekt (≈ 10 USD/Monat, E17) oder Pausieren eines Projekts | 5 min |
