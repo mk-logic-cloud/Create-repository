@@ -2,7 +2,7 @@
 
 **Zweck:** Ein neuer Claude-Aufruf liest **nur diese Datei** und arbeitet ohne erneute Gesamtanalyse weiter. Nach jedem Arbeitspaket aktualisieren.
 
-Stand: 12.11.2026 · Branch `claude/nice-pascal-gknlav` (Basis `main` = `d0c4925`) · Produkt: privates Command Center für **einen** Eigentümer.
+Stand: 12.11.2026 (nach P2/P3-Vorbereitung) · Branch `claude/nice-pascal-gknlav` (Basis `main` = `d0c4925`) · Produkt: privates Command Center für **einen** Eigentümer.
 
 ## 1. Aktueller Stand in einem Satz
 
@@ -62,19 +62,29 @@ Weitere Sparmöglichkeiten werden **nicht** behauptet, solange sie nicht belegt 
 
 ## 6. Sicherheitsunterlagen (nicht neu analysieren – nur bei Bedarf lesen)
 
-Im Claude-Scratchpad der Sitzung (nicht im Repository; flüchtig, siehe Hinweis):
-- Plan v3.11, Testplan v7, Risiko v7 (Entwurf), E13 v3.11, Owner-Tasks v3.11, Befundmatrix v3.11, Audit v3.10, Konsistenzprüfung `audit24`.
-- `ACCESS_READINESS_v1/` (Bestandsaufnahme, S-0-Konzept, Checkliste P1–P8).
+**Ablageort: NICHT in diesem Repository.** Das Repository ist **öffentlich** (geprüft am 12.11.2026). Die Unterlagen enthalten Angriffswege und Annahmen zum Plattformverhalten; eine öffentliche Ablage widerspricht der eigenen Vertraulichkeitsregel (Testplan v7 §5.14) und der Supabase-AUP 3.5.
 
-**Hinweis:** Der Scratchpad überdauert die Cloud-Sitzung nicht. Sollen diese Unterlagen erhalten bleiben, müssen sie auf Anweisung des Eigentümers ins Repository übernommen werden (offene Entscheidung, siehe §8).
+- **Gesichert als Archiv beim Eigentümer:** `PHASE1_SECURITY_ARCHIVE_2026-11-12.tar.gz`
+  - 483 Dateien, SHA-256 `d2cbb7f47b651c001cf81ad7505eb757e8614169c860058bcb6d86d1ca73279d`
+  - Verzeichnis: `PHASE1_SECURITY_ARCHIVE_INDEX.md` (Auditberichte chronologisch, Ausschlüsse begründet)
+  - Am 12.11.2026 an den Eigentümer übergeben
+- **Integrität (entpackt geprüft):**
+  - Archivmanifest 483/483 OK
+  - `MANIFEST_v3.11` 6/6 OK
+  - alle `SHA256SUMS` in `audit18`–`audit25`, `v310_build`, `v311_build`, `ACCESS_READINESS_v1` OK
+  - Altstand `.hash_before_v311`: 0 abweichend (2 882 Einträge fehlen bewusst: Fremdcode, Testdatenbanken)
+- **Übernahme ins Repository nur nach Entscheidung des Eigentümers** (§10, Entscheidung A).
+- Für eine Fortsetzung: Archiv in einen leeren Ordner entpacken und `sha256sum -c ARCHIVE_MANIFEST.sha256` ausführen. Aktuelle Fassungen: Plan v3.11, Testplan v7, Risiko v7 (Entwurf), E13 v3.11, Owner-Tasks v3.11, Befundmatrix v3.11.
 
 ## 7. Arbeitspakete
 
 | Paket | Ziel | Status | Checkpoint |
 |---|---|---|---|
 | **P1** | Lokale Vorschau mit einem Befehl, synthetische Daten, Speichern im Speicher; Fortschrittsdatei | **erledigt** | Commit „P1: lokale Demo …“ auf `claude/nice-pascal-gknlav` |
-| P2 | UI-Feinschliff nach Rückmeldung des Eigentümers aus der lokalen Demo (konkrete Wünsche sammeln) | offen – wartet auf Rückmeldung | – |
-| P3 | S-0 Cloud-Vorschau nach Checkliste P1–P8 (Supabase-Staging, eigenes Vercel-Projekt mit Deployment Protection) | gesperrt bis P1–P8 erfüllt | – |
+| P2 | UI-Feinschliff nach Rückmeldung des Eigentümers aus der lokalen Demo | offen – wartet auf Rückmeldung | – |
+| P3a | Sicherung der Sicherheitsunterlagen | **erledigt** als vertrauliches Archiv beim Eigentümer (§6) | Commit „P3a/P3b …“ |
+| P3b | S-0 vorbereiten: Checkliste P1–P8 und Vorschau-Plan (§8, §9) | **erledigt** (nur Dokumentation) | Commit „P3a/P3b …“ |
+| P3c | S-0 umsetzen | **gesperrt** bis P1–P8 erfüllt **und** ausdrückliche Freigabe für Supabase/Vercel | – |
 | P4 | Phase-1-Sicherheit umsetzen | gesperrt bis Audit v3.11 + Implementierungsfreigabe | – |
 
 ### P1 – Protokoll
@@ -88,9 +98,62 @@ Im Claude-Scratchpad der Sitzung (nicht im Repository; flüchtig, siehe Hinweis)
 7. **Checkpoint:** siehe Git-Log.
 8. **Fortsetzung:** siehe §8.
 
-## 8. Nächster konkreter Schritt (für den nächsten Claude-Aufruf)
+## 8. S-0 – Checkliste P1–P8 (nur offene Voraussetzungen)
+
+Status am 12.11.2026: **keine Rückmeldung des Eigentümers → alle offen.** Nachweise jeweils als Bildschirmfoto **ohne** Adressen, Schlüssel oder Passwörter. Aufwand = geschätzte Zeit des Eigentümers (Schätzung).
+
+| # | Anforderung | Status | Nachweis | Entscheidung des Eigentümers | Aufwand |
+|---|---|---|---|---|---|
+| P1 | MFA aktiv auf Postfach, Supabase, GitHub, Vercel | offen | je ein Bildschirmfoto der Sicherheitsseite | – | 15–30 min |
+| P2 | Postfach ohne fremde Weiterleitungen, Filter, Delegationen, App-Passwörter, Wiederherstellungsadressen | offen | Bildschirmfoto | bei Fund: zuerst bereinigen | 10 min |
+| P3 | Nur bekannte Mitglieder in Supabase und Vercel; bei GitHub keine unbekannten Tokens, SSH-Schlüssel oder OAuth-Apps | offen | Bildschirmfotos | – | 10 min |
+| P4 | Weiteres Free-Projekt möglich (aktive Free-Projekte aller Owner/Admins der Ziel-Organisation) | offen | Zahl + Bildschirmfoto | sonst Pro-Projekt (≈ 10 USD/Monat, E17) oder Pausieren eines Projekts | 5 min |
+| P5 | Vercel-Tarif bekannt; „Vercel Authentication“ als Deployment Protection verfügbar | offen | Bildschirmfoto (nur ansehen) | Hobby (laut Vercel nur nicht-kommerziell, UNBESTÄTIGT) oder Pro | 5 min |
+| P6 | Kosten: 0 USD bestätigt oder Kosten freigegeben | offen | Ihre Zeile | Kostenfreigabe E17 | 2 min |
+| P7 | Supabase-Dashboard bietet „Add user → Create new user“ mit „Auto Confirm User“ (sonst wäre eine offene Registrierung nötig) | offen | Bildschirmfoto des Dialogs (in einem bestehenden Projekt nur ansehen) | wenn nicht vorhanden: STOPP und Rückfrage | 5 min |
+| P8 | Einmaliges Testpasswort und neues DB-Passwort im Passwortmanager | offen | „ja“ (nichts übermitteln) | – | 2 min |
+
+Gesamt etwa 1 Stunde Ihrer Zeit, wenn alles vorhanden ist.
+
+## 9. Kürzester sicherer Weg zu HTTPS auf Laptop und iPhone
+
+| Weg | Was Sie bekommen | Sicherheit | Externe Änderungen | Bewertung |
+|---|---|---|---|---|
+| **A – S-0 App-Vorschau** (empfohlen) | vollständige App mit **echter** Anmeldung und **echtem** Speichern, HTTPS, Laptop und iPhone | eigenes Supabase-Staging (getrennt von allem anderen), eigenes Vercel-Projekt, Vercel-Schutz **vor** der App, keine Registrierung, nur synthetische Daten | neues Supabase-Projekt, neues Vercel-Projekt | **Hauptweg** |
+| B – lokale Demo über ein privates Netz (z. B. Tailscale „serve“) | Demo-Oberfläche mit synthetischen Daten auf dem iPhone | keine öffentliche Adresse; **Attrappe statt echter Anmeldung** | Konto bei einem Drittanbieter, Software auf Laptop und iPhone | nur als Zwischenlösung; Funktionsweise UNBESTÄTIGT, nicht getestet |
+| ~~C – Demo-Attrappe auf Vercel~~ | – | würde eine **Schein-Anmeldung** ins Netz stellen | – | **verworfen** (unsicherer Platzhalter) |
+
+**Plan für Weg A (nach P1–P8 und Ihrer Freigabe):**
+
+| Schritt | Wer | Inhalt | Dauer (Schätzung) |
+|---|---|---|---|
+| A1 | Sie | Supabase-Projekt `wayne-cc-s0-staging` anlegen (Free, EU/Frankfurt) | 5 min |
+| A2 | Sie, nach meiner Vorlage | im SQL-Editor die 3 App-Migrationen aus `wayne-command-center/supabase/migrations/` ausführen (kein Phase-1-Hook) | 5 min |
+| A3 | Sie | Auth-Einstellungen: Registrierung **aus**, „Confirm email“ an, „Secure email change“ an, Recovery-Mailvorlage Standard; Testkonto über „Add user“ mit Auto-Confirm | 10 min |
+| A4 | Sie, ich begleite | lokale Probe mit echtem Backend: `.env.local` mit **Staging**-URL und Publishable Key, `npm run build && npm start`, anmelden, ein Datensatz je Modul | 15 min |
+| A5 | Sie | eigenes Vercel-Projekt `wayne-cc-s0-preview` (Root Directory `wayne-command-center`), Variablen **nur** für Production; Previews ohne Variablen (zeigen `/setup`) | 10 min |
+| A6 | Sie | Deployment Protection „Vercel Authentication“ für alle Deployments; erst dann deployen | 5 min |
+| A7 | Sie | `SITE_URL` = Vercel-Adresse; in Supabase Site URL und Redirect-URL (exakt `…/auth/confirm`) eintragen | 5 min |
+| A8 | Sie, Protokoll durch mich | Abnahme auf Laptop und iPhone: Vercel-Schutz greift im privaten Fenster, Login, Speichern, Abmelden | 15 min |
+
+**Grenzen von S-0:**
+- Heutiger Sicherheitsstand: Passwort allein, keine MFA. Deshalb **nur synthetische Daten**.
+- **Nicht produktionsreif.** Die offenen Befunde der Phase 1 bleiben offen; S-0 belegt keinen davon.
+
+## 10. Offene Entscheidungen des Eigentümers
+
+| # | Entscheidung | Optionen | Empfehlung |
+|---|---|---|---|
+| **A** | Ablage der Sicherheitsunterlagen | (1) dieses Repository auf **privat** stellen, dann Archiv übernehmen; (2) separates **privates** Repository; (3) nur offline beim Eigentümer | (1) oder (2). Bis dahin bleibt das Archiv offline |
+| B | Checkliste P1–P8 (§8) zurückmelden | – | – |
+| C | S-0 umsetzen (Weg A, §9) | freigeben / nicht freigeben | freigeben, sobald P1–P8 erfüllt sind |
+| D | Kosten (E17) | Free (falls P4 erlaubt) / Pro-Projekt ≈ 10 USD/Monat | Free |
+| E | Zwischenlösung Weg B (privates Netz) | ja / nein | nur, wenn das iPhone vor S-0 nötig ist |
+
+## 11. Nächster konkreter Schritt (für den nächsten Claude-Aufruf)
 
 1. Diese Datei lesen. **Keine** erneute Repository- oder Sicherheitsanalyse.
 2. Hat der Eigentümer UI-Wünsche aus der Demo geschickt → Paket P2: Wünsche bündeln, umsetzen, `npm run check` + kurzer Browsertest, Checkpoint.
-3. Hat der Eigentümer P1–P8 als erfüllt gemeldet → Paket P3 nach `ACCESS_READINESS_v1/S0_STAGING_CONCEPT_FINAL.md` (Scratchpad; falls nicht mehr vorhanden: Konzept aus §5 dieser Datei und dem Wunsch des Eigentümers neu, knapp aufsetzen).
-4. Sonst: nichts tun und auf den Eigentümer warten.
+3. Hat der Eigentümer P1–P8 (§8) als erfüllt gemeldet **und** S-0 ausdrücklich freigegeben → Paket P3c nach §9, Weg A. Schritt für Schritt begleiten; Claude selbst ändert keine externen Systeme.
+4. Entscheidung A (§10; Ablage der Sicherheitsunterlagen) beachten: Erst wenn das Repository privat ist oder ein privates Repository benannt wurde, das Archiv dort ablegen (unverändert entpacken, Manifest prüfen, Commit).
+5. Sonst: nichts tun und auf den Eigentümer warten.
