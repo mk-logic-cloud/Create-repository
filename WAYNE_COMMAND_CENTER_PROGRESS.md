@@ -96,7 +96,7 @@ Weitere Sparmöglichkeiten werden **nicht** behauptet, solange sie nicht belegt 
 5. **Ergebnis:** lokal vollständig bedienbar.
 6. **Offen:** Rückmeldung des Eigentümers zur Oberfläche (P2); Checkliste P1–P8 (P3); Entscheidung über Übernahme der Sicherheitsunterlagen ins Repository.
 7. **Checkpoint:** siehe Git-Log.
-8. **Fortsetzung:** siehe §8.
+8. **Fortsetzung:** siehe §11.
 
 ## 8. S-0 – Checkliste P1–P8 (nur offene Voraussetzungen)
 
