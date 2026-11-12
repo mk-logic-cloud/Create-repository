@@ -92,7 +92,7 @@ Status am 12.11.2026: **keine Rückmeldung des Eigentümers → alle offen.** Na
 
 | # | Anforderung | Status | Nachweis | Entscheidung des Eigentümers | Aufwand |
 |---|---|---|---|---|---|
-| P1 | MFA aktiv auf Postfach, Supabase, GitHub, Vercel | offen | je ein Bildschirmfoto der Sicherheitsseite | – | 15–30 min |
+| P1 | MFA aktiv auf Postfach, Supabase, GitHub, Vercel | **teilweise** (12.11.2026): Gmail = 2FA per SMS (Selbstauskunft); Supabase, GitHub, Vercel offen | Selbstauskunft; Bildschirmfoto optional | Empfehlung: zusätzlich Passkey oder Sicherheitsschlüssel für Gmail (SMS ist anfällig für SIM-Tausch) | 15–30 min |
 | P2 | Postfach ohne fremde Weiterleitungen, Filter, Delegationen, App-Passwörter, Wiederherstellungsadressen | offen | Bildschirmfoto | bei Fund: zuerst bereinigen | 10 min |
 | P3 | Nur bekannte Mitglieder in Supabase und Vercel; bei GitHub keine unbekannten Tokens, SSH-Schlüssel oder OAuth-Apps | offen | Bildschirmfotos | – | 10 min |
 | P4 | Weiteres Free-Projekt möglich (aktive Free-Projekte aller Owner/Admins der Ziel-Organisation) | offen | Zahl + Bildschirmfoto | sonst Pro-Projekt (≈ 10 USD/Monat, E17) oder Pausieren eines Projekts | 5 min |
