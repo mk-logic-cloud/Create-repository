@@ -54,27 +54,15 @@ Weitere Sparmöglichkeiten werden **nicht** behauptet, solange sie nicht belegt 
 
 | Ziel | Blockiert durch | Wer |
 |---|---|---|
-| Private Cloud-Vorschau S-0 (iPhone + Laptop, HTTPS) | Checkliste `ACCESS_READINESS_v1/S0_PREFLIGHT_CHECKLIST.md` P1–P8 (M2, D4, Kosten, Vercel-Schutz, „Auto Confirm User“) | **Eigentümer** |
+| Private Cloud-Vorschau S-0 (iPhone + Laptop, HTTPS) | Checkliste P1–P8 (§8) (M2, D4, Kosten, Vercel-Schutz, „Auto Confirm User“) | **Eigentümer** |
 | Speichern mit echtem Backend | separates Staging-Supabase-Projekt (nach P1–P8) | Eigentümer legt an, Claude begleitet |
 | Produktivbetrieb mit echten Daten | Phase-1-Sicherheit (MFA/AAL2, Datenbremse, Hook) nicht umgesetzt; offene Befunde NF-29, NF-43, NF-55, NF-58, NF-73, NF-82, NF-83, NF-84; Audit v3.11 ausstehend | Implementierungsfreigabe des Eigentümers |
 
 **Die Vorschau ist nie produktionsreif**, solange diese Nachweise fehlen.
 
-## 6. Sicherheitsunterlagen (nicht neu analysieren – nur bei Bedarf lesen)
+## 6. Sicherheitsunterlagen
 
-**Ablageort: NICHT in diesem Repository.** Das Repository ist **öffentlich** (geprüft am 12.11.2026). Die Unterlagen enthalten Angriffswege und Annahmen zum Plattformverhalten; eine öffentliche Ablage widerspricht der eigenen Vertraulichkeitsregel (Testplan v7 §5.14) und der Supabase-AUP 3.5.
-
-- **Gesichert als Archiv beim Eigentümer:** `PHASE1_SECURITY_ARCHIVE_2026-11-12.tar.gz`
-  - 483 Dateien, SHA-256 `d2cbb7f47b651c001cf81ad7505eb757e8614169c860058bcb6d86d1ca73279d`
-  - Verzeichnis: `PHASE1_SECURITY_ARCHIVE_INDEX.md` (Auditberichte chronologisch, Ausschlüsse begründet)
-  - Am 12.11.2026 an den Eigentümer übergeben
-- **Integrität (entpackt geprüft):**
-  - Archivmanifest 483/483 OK
-  - `MANIFEST_v3.11` 6/6 OK
-  - alle `SHA256SUMS` in `audit18`–`audit25`, `v310_build`, `v311_build`, `ACCESS_READINESS_v1` OK
-  - Altstand `.hash_before_v311`: 0 abweichend (2 882 Einträge fehlen bewusst: Fremdcode, Testdatenbanken)
-- **Übernahme ins Repository nur nach Entscheidung des Eigentümers** (§10, Entscheidung A).
-- Für eine Fortsetzung: Archiv in einen leeren Ordner entpacken und `sha256sum -c ARCHIVE_MANIFEST.sha256` ausführen. Aktuelle Fassungen: Plan v3.11, Testplan v7, Risiko v7 (Entwurf), E13 v3.11, Owner-Tasks v3.11, Befundmatrix v3.11.
+Vertrauliche Sicherheitsunterlagen (Pläne, Audits, Prüfnachweise) werden **ausschließlich offline beim Eigentümer** aufbewahrt (Entscheidung des Eigentümers vom 12.11.2026). Sie gehören nicht in dieses Repository, nicht in ein anderes Repository und nicht in einen Cloud-Speicher. Neue vertrauliche Berichte werden ebenso behandelt. Für eine Fortsetzung stellt der Eigentümer die benötigten Unterlagen bereit.
 
 ## 7. Arbeitspakete
 
@@ -82,7 +70,7 @@ Weitere Sparmöglichkeiten werden **nicht** behauptet, solange sie nicht belegt 
 |---|---|---|---|
 | **P1** | Lokale Vorschau mit einem Befehl, synthetische Daten, Speichern im Speicher; Fortschrittsdatei | **erledigt** | Commit „P1: lokale Demo …“ auf `claude/nice-pascal-gknlav` |
 | P2 | UI-Feinschliff nach Rückmeldung des Eigentümers aus der lokalen Demo | offen – wartet auf Rückmeldung | – |
-| P3a | Sicherung der Sicherheitsunterlagen | **erledigt** als vertrauliches Archiv beim Eigentümer (§6) | Commit „P3a/P3b …“ |
+| P3a | Sicherung der Sicherheitsunterlagen | **erledigt**: offline beim Eigentümer (§6) | Commit „P3a/P3b …“ |
 | P3b | S-0 vorbereiten: Checkliste P1–P8 und Vorschau-Plan (§8, §9) | **erledigt** (nur Dokumentation) | Commit „P3a/P3b …“ |
 | P3c | S-0 umsetzen | **gesperrt** bis P1–P8 erfüllt **und** ausdrückliche Freigabe für Supabase/Vercel | – |
 | P4 | Phase-1-Sicherheit umsetzen | gesperrt bis Audit v3.11 + Implementierungsfreigabe | – |
@@ -115,6 +103,19 @@ Status am 12.11.2026: **keine Rückmeldung des Eigentümers → alle offen.** Na
 
 Gesamt etwa 1 Stunde Ihrer Zeit, wenn alles vorhanden ist.
 
+**Antwortvorlage** (einfach ausfüllen und zurückschicken, keine Bildschirmfotos mit Adressen oder Schlüsseln):
+```
+P1 MFA Postfach/Supabase/GitHub/Vercel: ja/nein
+P2 Postfach sauber: ja/nein
+P3 Mitglieder/Tokens geprüft: ja/nein
+P4 weiteres Free-Projekt möglich: ja/nein (Anzahl aktiver Free-Projekte: _)
+P5 Vercel-Tarif: Hobby/Pro; Vercel Authentication verfügbar: ja/nein
+P6 Kosten: 0 USD / freigegeben bis _ USD pro Monat
+P7 Supabase „Add user“ mit Auto Confirm vorhanden: ja/nein
+P8 Passwörter bereit: ja
+Freigabe S-0 (neues Supabase- und Vercel-Projekt): ja/nein
+```
+
 ## 9. Kürzester sicherer Weg zu HTTPS auf Laptop und iPhone
 
 | Weg | Was Sie bekommen | Sicherheit | Externe Änderungen | Bewertung |
@@ -144,7 +145,7 @@ Gesamt etwa 1 Stunde Ihrer Zeit, wenn alles vorhanden ist.
 
 | # | Entscheidung | Optionen | Empfehlung |
 |---|---|---|---|
-| **A** | Ablage der Sicherheitsunterlagen | (1) dieses Repository auf **privat** stellen, dann Archiv übernehmen; (2) separates **privates** Repository; (3) nur offline beim Eigentümer | (1) oder (2). Bis dahin bleibt das Archiv offline |
+| A | Ablage der Sicherheitsunterlagen | **entschieden 12.11.2026: ausschließlich offline** | – |
 | B | Checkliste P1–P8 (§8) zurückmelden | – | – |
 | C | S-0 umsetzen (Weg A, §9) | freigeben / nicht freigeben | freigeben, sobald P1–P8 erfüllt sind |
 | D | Kosten (E17) | Free (falls P4 erlaubt) / Pro-Projekt ≈ 10 USD/Monat | Free |
@@ -155,5 +156,5 @@ Gesamt etwa 1 Stunde Ihrer Zeit, wenn alles vorhanden ist.
 1. Diese Datei lesen. **Keine** erneute Repository- oder Sicherheitsanalyse.
 2. Hat der Eigentümer UI-Wünsche aus der Demo geschickt → Paket P2: Wünsche bündeln, umsetzen, `npm run check` + kurzer Browsertest, Checkpoint.
 3. Hat der Eigentümer P1–P8 (§8) als erfüllt gemeldet **und** S-0 ausdrücklich freigegeben → Paket P3c nach §9, Weg A. Schritt für Schritt begleiten; Claude selbst ändert keine externen Systeme.
-4. Entscheidung A (§10; Ablage der Sicherheitsunterlagen) beachten: Erst wenn das Repository privat ist oder ein privates Repository benannt wurde, das Archiv dort ablegen (unverändert entpacken, Manifest prüfen, Commit).
+4. Vertrauliche Sicherheitsunterlagen und neue Auditberichte **nie** ins Repository oder in Cloud-Speicher; nur dem Eigentümer übergeben (§6).
 5. Sonst: nichts tun und auf den Eigentümer warten.
